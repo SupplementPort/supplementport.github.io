@@ -118,11 +118,15 @@
         }
 
         .message {
-            padding: 10px 15px;
-            border-radius: 18px;
-            max-width: 80%;
-            font-size: 0.95rem;
-        }
+    max-width: 70%;
+    padding: 10px 15px;
+    border-radius: 15px;
+    /* CHANGE THIS LINE BELOW */
+    margin: 1px; /* Reduced from 10px to 4px to make bubbles narrower */
+    line-height: 1.4;
+    word-wrap: break-word;
+    position: relative;
+}
 
         .ai-message {
             background: #eef5ff;
@@ -288,14 +292,7 @@
                     userDiv.style.borderBottomRightRadius = '2px';
                     userDiv.textContent = input.value;
                     chatBox.appendChild(userDiv);
-
-                    setTimeout(() => {
-                        const aiDiv = document.createElement('div');
-                        aiDiv.className = 'message ai-message';
-                        aiDiv.textContent = generate_response(inputtext);
-                        chatBox.appendChild(aiDiv);
-                        chatBox.scrollTop = chatBox.scrollHeight;
-                    }, 800);
+                    generate_response(inputtext)
 
                     input.value = "";
                     chatBox.scrollTop = chatBox.scrollHeight;
