@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1024">
+    <title>Home - SuPPort</title>
+    <link rel="icon" type="image/png" href="icon.png?v=2">
+    <style>
+        :root {
+            --primary-blue: #a5ad14;
+            --accent-green: #015110;
+            --light-bg: #fdfeda; 
+            --text-dark: #24292f;
+            --token-gold: #ffd700;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+        }
+
+        nav {
+            background-color: var(--primary-blue);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            height: 60px;
+            min-height: 80px;
+            padding: 10px 20px;
+        }
+
+        .logo img {
+            height: 75px;
+            width: auto;
+            vertical-align: middle;
+        }   
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+            align-items: center;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        /* Token Display Styling */
+        .token-display {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: var(--token-gold);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-bottom: 1px solid #e1e4e8;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--accent-green);
+        }
+
+        .chat-container {
+            max-width: 600px;
+            margin: 40px auto 10px auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: 1px solid #d0d7de;
+        }
+
+        .chat-header {
+        background: var(--primary-blue);
+        color: white;
+        padding: 15px;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        }
+
+        .chat-box {
+            height: 300px;
+            padding: 20px;
+            overflow-y: auto;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            padding: 10px 15px;
+            border-radius: 18px;
+            max-width: 80%;
+            font-size: 0.95rem;
+        }
+
+        .ai-message {
+            background: #eef5ff;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .chat-input-area {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #d0d7de;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        .send-btn {
+            background: var(--accent-green);
+            color: white;
+            border: none;
+            padding: 0 15px;
+            margin-left: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .send-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Ad Section */
+        .ad-controls {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .ad-btn {
+            background: #f08a5d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .ad-btn:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        #adContainer {
+            display: none;
+            margin-top: 10px;
+        }
+
+        #adContainer img {
+            max-width: 300px;
+            border-radius: 8px;
+        }
+
+        .disclaimer {
+            font-size: 0.75rem;
+            color: #8c959f;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    
+    <nav>
+        <div class="logo">
+            <a href="index.html"><img src="logo.png" alt="SuPPort Logo"></a>
+        </div>
+        <ul>
+            <li><a href="aboutus.html">About Us</a></li>
+            <li><a href="upgrade.html">Upgrade</a></li>
+            <li><a href="profile.html">Profile & Settings</a></li>
+        </ul>
+    </nav>
+
+    <header class="hero">
+        <h1>Welcome to SuPPort</h1>
+        <p>Your all-in-one health essentials hub. We recommend, you compare.</p>
+    </header>
+
+    <section class="chat-container">
+       <div class="chat-header">
+    <span>CareAI Consultation</span>
+    <div class="token-display">
+        <span id="tokenCount">100</span> 🪙
+    </div>
+</div>
+        <div class="chat-box" id="chatBox">
+            <div class="message ai-message">
+                Hello! How can I help you? UwU 
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="userInput" placeholder="Type your symptoms here...">
+            <button class="send-btn" id="sendBtn" onclick="sendMessage()">Send (-5 🪙)</button>
+        </div>
+    </section>
+
+    <div class="ad-controls">
+        <button class="ad-btn" id="adBtn" onclick="watchAd()">Watch Ad for +50 🪙</button>
+        <div id="adContainer">
+            <p>Ad playing, Enjoy :D</p>
+            <img src="ad.gif" alt="Ad GIF">
+        </div>
+    </div>
+
+    <footer class="disclaimer">
+        <strong>Important:</strong> Our recommendations are based on peer-reviewed evidence but are NOT a medical diagnosis. <br>
+        Please consult a registered pharmacist or doctor before taking any supplements.
+    </footer>
+
+    <script src="psuedoai.js"></script>
+    <script>
+        // 1. Initialize Token System
+        let tokens = 100;
+        let isAdPlaying = false;
+
+        function updateTokenUI() {
+            document.getElementById('tokenCount').textContent = tokens;
+            const sendBtn = document.getElementById('sendBtn');
+            
+            // Disable send button if user is out of tokens
+            if (tokens < 5) {
+                sendBtn.disabled = true;
+                sendBtn.textContent = "No Tokens!";
+            } else {
+                sendBtn.disabled = false;
+                sendBtn.textContent = "Send (-5 🪙)";
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const inputtext = input.value;
+            const chatBox = document.getElementById('chatBox');
+
+            // 2. Check and Deduct Tokens
+            if (input.value.trim() !== "") {
+                if (tokens >= 5) {
+                    tokens -= 5;
+                    updateTokenUI();
+
+                    const userDiv = document.createElement('div');
+                    userDiv.className = 'message';
+                    userDiv.style.background = '#2da44e';
+                    userDiv.style.color = 'white';
+                    userDiv.style.alignSelf = 'flex-end';
+                    userDiv.style.borderBottomRightRadius = '2px';
+                    userDiv.textContent = input.value;
+                    chatBox.appendChild(userDiv);
+
+                    setTimeout(() => {
+                        const aiDiv = document.createElement('div');
+                        aiDiv.className = 'message ai-message';
+                        aiDiv.textContent = generate_response(inputtext);
+                        chatBox.appendChild(aiDiv);
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                    }, 800);
+
+                    input.value = "";
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                } else {
+                    alert("You don't have enough tokens! Watch an ad to get more.");
+                }
+            }
+        }
+
+        // 3. Ad Logic
+        function watchAd() {
+            if (isAdPlaying) return;
+
+            isAdPlaying = true;
+            const adBtn = document.getElementById('adBtn');
+            const adContainer = document.getElementById('adContainer');
+
+            // Disable button and show GIF
+            adBtn.disabled = true;
+            adContainer.style.display = 'block';
+
+            // Wait 8 seconds
+            setTimeout(() => {
+                tokens += 50;
+                updateTokenUI();
+                
+                // Hide GIF and re-enable button
+                adContainer.style.display = 'none';
+                adBtn.disabled = false;
+                isAdPlaying = false;
+                
+                alert("You earned 50 tokens!");
+            }, 8000);
+        }
+
+        // Initial UI sync
+        updateTokenUI();
+    </script>
+</body>
+</html>

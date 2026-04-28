@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1024">
+    <title>Upgrade - SuPPort</title>
+    <link rel="icon" type="image/png" href="icon.png?v=2">
+    <style>
+        :root {
+            --primary-navy: #3b5998;
+            --header-dark: #2d4373;
+            --bg-light: #f0f4f8;
+            --text-dark: #24292f;
+            --accent-blue: #4a90e2;
+            --hot-orange: #f39c12;
+            --hot-silver: #a9b2bc;
+            --hot-bronze: #e67e22;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-light);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        nav {
+            background-color: var(--header-dark);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            height: 80px;
+            padding: 0 20px;
+        }
+
+        .logo img {
+            height: 75px;
+            width: auto;
+            vertical-align: middle;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li { margin-left: 20px; }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .upgrade-container {
+            flex: 1;
+            padding: 20px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+        }
+
+        .page-title-banner {
+            background-color: var(--accent-blue);
+            color: white;
+            width: 100%;
+            max-width: 1000px;
+            padding: 10px 20px;
+            border-radius: 10px 10px 0 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .plans-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            padding: 20px;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .plan-button {
+            background: #f8faff;
+            border: 2px solid #e1e8f0;
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            align-items: flex-start;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            text-align: left;
+            width: 100%;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .plan-button:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .plan-button.hot-1 { background: #fffbe6; border-color: #ffe58f; }
+        .plan-button.hot-2 { background: #e2e2e2; border-color: #e2e2e244; }
+        .plan-button.hot-3 { background: #fff2e6; border-color: #ffd8b3; }
+        
+        .plan-button.hot-1:hover, .plan-button.hot-3:hover, .plan-button.hot-2:hover {
+            border-color: var(--accent-blue);
+        }
+
+        .plan-icon {
+            width: 90px;
+            height: 90px;
+            margin-right: 25px;
+            flex-shrink: 0;
+        }
+
+        .plan-details { flex-grow: 1; }
+
+        .plan-logo {
+            height: 50px;
+            width: 220px;
+            object-fit: contain;
+            object-position: left;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .plan-price {
+            color: #ff7675;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .lores-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 5px 20px;
+            margin-top: 10px;
+        }
+
+        .lore-item {
+            color: #576574;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .lore-num {
+            background: var(--accent-blue);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.75rem;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+
+        .click-text {
+            color: #b2bec3;
+            font-size: 1.2rem;
+            position: absolute;
+            top: 20px;
+            right: 40px;
+        }
+
+        .hot-tag {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            transform: rotate(15deg);
+        }
+
+        .hot-tag.gold { color: var(--hot-orange); }
+        .hot-tag.silver { color: var(--hot-silver); text-shadow: 1px 1px 1px rgba(0,0,0,0.1); }
+        .hot-tag.bronze { color: var(--hot-bronze); }
+
+        .brands-btn {
+            background-color: var(--primary-navy);
+            color: white;
+            border-radius: 25px;
+            padding: 30px;
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .brands-btn:hover {
+            background-color: var(--accent-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .brands-btn span { margin-right: 20px; }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">
+            <a href="index.html"><img src="logos/logou.png" alt="SuPPort Logo"></a>
+        </div>
+        <ul>
+            <li><a href="aboutus.html">About Us</a></li>
+            <li><a href="upgrade.html">Upgrade</a></li>
+            <li><a href="profile.html">Profile</a></li>
+        </ul>
+    </nav>
+
+    <div class="upgrade-container">
+        <div class="page-title-banner">User Subscriptions</div>
+
+        <div class="plans-list">
+            <button class="plan-button hot-1">
+                <div class="hot-tag gold">No.1 Hot!</div>
+                <img src="upgrades/zupport_icon.png" alt="Icon" class="plan-icon">
+                <div class="plan-details">
+                    <img src="upgrades/zupport_logo.png" alt="ZuPPort" class="plan-logo">
+                    <div class="plan-price">[$158/Month]</div>
+                    <div class="lores-grid">
+                        <div class="lore-item"><span class="lore-num">1</span> ZuPPort Badge</div>
+                        <div class="lore-item"><span class="lore-num">4</span> Supplement Reminder & Comparison</div>
+                        <div class="lore-item"><span class="lore-num">2</span> 5% off Promo Code</div>
+                        <div class="lore-item"><span class="lore-num">5</span> Supplement Intake Report Export</div>
+                        <div class="lore-item"><span class="lore-num">3</span> 15% off Birth Month Code</div>
+                        <div class="lore-item"><span class="lore-num">6</span> Ad-free Experience</div>
+                    </div>
+                </div>
+                <div class="click-text" style="color: #f39c12;">Click to view plan!</div>
+            </button>
+
+            <button class="plan-button hot-2">
+                <div class="hot-tag silver">No.2 Hot!</div>
+                <img src="upgrades/support_icon.png" alt="Icon" class="plan-icon">
+                <div class="plan-details">
+                    <img src="upgrades/support_logo.png" alt="$uPPort" class="plan-logo">
+                    <div class="plan-price">[$78/Month]</div>
+                    <div class="lores-grid">
+                        <div class="lore-item"><span class="lore-num">1</span> $uPPort Badge</div>
+                        <div class="lore-item"><span class="lore-num">3</span> Supplement Intake Report Export</div>
+                        <div class="lore-item"><span class="lore-num">2</span> Supplement Reminder & Comparison</div>
+                        <div class="lore-item"><span class="lore-num">4</span> Ad-free Experience</div>
+                    </div>
+                </div>
+                <div class="click-text">Click to view plan!</div>
+            </button>
+
+            <button class="plan-button hot-3">
+                <div class="hot-tag bronze">No.3 Hot!</div>
+                <img src="upgrades/support_lite_icon.png" alt="Icon" class="plan-icon">
+                <div class="plan-details">
+                    <img src="upgrades/support_lite_logo.png" alt="$uPPort Lite" class="plan-logo">
+                    <div class="plan-price">[$38/Month]</div>
+                    <div class="lores-grid">
+                        <div class="lore-item"><span class="lore-num">1</span> $uPPort Lite Badge</div>
+                        <div class="lore-item"><span class="lore-num">2</span> Supplement Reminder & Comparison</div>
+                        <div class="lore-item"><span class="lore-num">3</span> Supplement Intake Report Export</div>
+                    </div>
+                </div>
+                <div class="click-text">Click to view plan!</div>
+            </button>
+
+            <button class="plan-button">
+                <img src="upgrades/2upport_icon.png" alt="Icon" class="plan-icon">
+                <div class="plan-details">
+                    <img src="upgrades/2upport_logo.png" alt="2uPPort" class="plan-logo">
+                    <div class="plan-price">[$58/Month]</div>
+                    <div class="lores-grid">
+                        <div class="lore-item"><span class="lore-num">1</span> 2uPPort Badge</div>
+                        <div class="lore-item"><span class="lore-num">2</span> Add a friend</div>
+                        <div class="lore-item"><span class="lore-num">3</span> Everything in $uPPort Lite</div>
+                    </div>
+                </div>
+                <div class="click-text">Click to view plan!</div>
+            </button>
+
+           
+
+            <button class="plan-button">
+                <img src="upgrades/support_family_icon.png" alt="Icon" class="plan-icon">
+                <div class="plan-details">
+                    <img src="upgrades/support_family_logo.png" alt="$uPPort Family" class="plan-logo">
+                    <div class="plan-price">[$178/Month]</div>
+                    <div class="lores-grid">
+                        <div class="lore-item"><span class="lore-num">1</span> $uPPort Family Badge</div>
+                        <div class="lore-item"><span class="lore-num">2</span> Add up to 3 family members (9+)</div>
+                        <div class="lore-item"><span class="lore-num">3</span> Everything in $uPPort</div>
+                    </div>
+                </div>
+                <div class="click-text">Click to view plan!</div>
+            </button>
+
+            <button class="plan-button">
+                <img src="upgrades/zupport_family_icon.png" alt="Icon" class="plan-icon">
+                <div class="plan-details">
+                    <img src="upgrades/zupport_family_logo.png" alt="ZuPPort Family" class="plan-logo">
+                    <div class="plan-price">[$178/Month]</div>
+                    <div class="lores-grid">
+                        <div class="lore-item"><span class="lore-num">1</span> ZuPPort Family Badge</div>
+                        <div class="lore-item"><span class="lore-num">2</span> Add up to 5 family members (9+)</div>
+                        <div class="lore-item"><span class="lore-num">3</span> Everything in ZuPPort</div>
+                    </div>
+                </div>
+                <div class="click-text">Click to view plan!</div>
+            </button>
+             <a href="#" class="brands-btn">
+                <span>Plans For Brands</span> ➔
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

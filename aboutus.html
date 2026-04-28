@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1024">
+    <title>About Us - SuPPort</title>
+    <link rel="icon" type="image/png" href="icon.png?v=2">
+    <style>
+        :root {
+            --primary-yellow: #9e34bb;
+            --bg-light-yellow: #f6d9fd;
+            --header-text: white;
+            --content-text-yellow: #bd73d4;
+            --nav-text: white;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-light-yellow);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        nav {
+            background-color: var(--primary-yellow);
+            color: var(--nav-text);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            height: 60px;
+            min-height: 80px;
+            padding: 10px 20px;
+        }
+
+        .logo img {
+            height: 75px;
+            width: auto;
+            vertical-align: middle;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li { margin-left: 20px; }
+
+        nav ul li a {
+            color: var(--nav-text);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .main-container {
+            display: flex;
+            flex: 1;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .about-box {
+            background-color: white;
+            width: 100%;
+            max-width: 900px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .about-header {
+            background-color: var(--primary-yellow);
+            color: var(--header-text);
+            padding: 10px 20px;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .about-content {
+            padding: 40px;
+            position: relative;
+            min-height: 250px;
+        }
+
+        .about-text {
+            color: var(--content-text-yellow);
+            font-size: 1.8rem;
+            line-height: 1.4;
+            font-weight: 600;
+            margin: 0;
+            margin-bottom: 60px;
+        }
+
+        .btn-go {
+            background-color: var(--primary-yellow);
+            color: white;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            transition: opacity 0.2s;
+        }
+
+        .btn-go:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">
+            <a href="index.html"><img src="logos/logoa.png" alt="SuPPort Logo"></a>
+        </div>
+        <ul>
+            <li><a href="aboutus.html">About Us</a></li>
+            <li><a href="upgrade.html">Upgrade</a></li>
+            <li><a href="profile.html">Profile & Settings</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-container">
+        <div class="about-box">
+            <div class="about-header">About Us</div>
+            <div class="about-content">
+                <p class="about-text">
+                    Not all supplements are right for you — SuPPort gives you AI-powered suggestions 
+                    tailored to your needs, then lets you compare verified brands side-by-side on 
+                    price, form, and ingredients. You stay in control. We make the decision 
+                    faster and smarter.
+                </p>
+                
+                <a href="index.html" class="btn-go">Go SuPPort ➔</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

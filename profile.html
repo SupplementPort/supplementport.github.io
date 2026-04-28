@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1024">
+    <title>Profile - SuPPort</title>
+    <link rel="icon" type="image/png" href="icon.png?v=2">
+    <style>
+        :root {
+            --primary-blue: #639db1; 
+            --text-dark: #24292f;
+            --sidebar-blue: #93d6e8; 
+            --header-light-blue: #b5e7f3; 
+            --accent-highlight: #d1f1f9; 
+            --ref-blue: #639db1; 
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0;
+            padding: 0;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        nav {
+            background-color: var(--primary-blue);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            height: 60px;
+            min-height: 80px; 
+            padding: 10px 20px;
+        }
+
+        .logo img {
+            height: 75px; 
+            width: auto;
+            vertical-align: middle;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li { margin-left: 20px; }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-blue); 
+            padding: 20px 0;
+            border-right: 2px solid #fff;
+        }
+
+        .sidebar-section { margin-bottom: 20px; }
+
+        .sidebar-section h3 {
+            color: white;
+            font-size: 1rem;
+            padding: 0 15px;
+            margin-bottom: 5px;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .sidebar ul { list-style: none; padding: 0; margin: 0; }
+
+        .sidebar ul li a {
+            display: block;
+            padding: 10px 20px; 
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .sidebar ul li a.active {
+            background-color: var(--accent-highlight); 
+            color: var(--ref-blue);
+            border-radius: 0 20px 20px 0;
+            margin-right: 10px;
+        }
+
+     
+        .content {
+            flex: 1;
+            padding: 30px; 
+            overflow-y: auto;
+            color: var(--text-dark);
+        }
+
+        .profile-header {
+            background-color: var(--header-light-blue);
+            padding: 10px 15px;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 25px;
+            border-radius: 4px;
+        }
+
+        .settings-view { display: none; }
+        .settings-view.active { display: block; }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 200px;
+            gap: 20px;
+        }
+
+        .field-group { margin-bottom: 15px; }
+        .field-group label {
+            display: inline-block;
+            width: 150px;
+            color: var(--ref-blue);
+            font-weight: bold;
+        }
+        
+        .field-group input {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .dob-input input { width: 40px; text-align: center; }
+        .dob-input input.year { width: 60px; }
+
+        .profile-pic-area {
+            text-align: center;
+            color: var(--ref-blue);
+        }
+
+        .profile-pic-area img {
+            width: 150px;
+            border-radius: 50%;
+            background: #eee;
+        }
+
+        .btn-action {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .log-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9rem;
+        }
+        
+        .asterisk { color: red; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">
+            <a href="index.html"><img src="logos/logop.png" alt="SuPPort Logo"></a>
+        </div>
+        <ul>
+            <li><a href="aboutus.html">About Us</a></li>
+            <li><a href="upgrade.html">Upgrade</a></li>
+            <li><a href="profile.html">Profile & Settings</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-container">
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <h3>Account</h3>
+                <ul>
+                    <li><a onclick="showSection('profile-settings', this)" class="active">Profile Settings</a></li>
+                    <li><a onclick="showSection('password', this)">Password</a></li>
+                    <li><a onclick="showSection('2fa', this)">2FA Auth</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <h3>Medical Profile</h3>
+                <ul>
+                    <li><a onclick="showSection('allergies', this)">Allergies</a></li>
+                    <li><a onclick="showSection('history', this)">Prescription History</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <h3>Miscellaneous</h3>
+                <ul>
+                    <li><a onclick="showSection('location', this)">Location</a></li>
+                    <li><a onclick="showSection('careai-log', this)">CareAI Log</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="content">
+            <div id="profile-settings" class="settings-view active">
+                <div class="profile-header">Profile Settings</div>
+                <div class="profile-grid">
+                    <div>
+                        <div class="field-group">
+                            <label>Username<span class="asterisk">*</span>:</label>
+                            <input type="text" value="BrainrotRoblox67">
+                        </div>
+                        <div class="field-group">
+                            <label>First Name<span class="asterisk">*</span>:</label>
+                            <input type="text" value="Ahmad">
+                        </div>
+                        <div class="field-group">
+                            <label>Middle Name:</label>
+                            <input type="text" value="Banana-king">
+                        </div>
+                        <div class="field-group">
+                            <label>Last Name<span class="asterisk">*</span>:</label>
+                            <input type="text" value="Mohammad">
+                        </div>
+                        <div class="field-group dob-input">
+                            <label>Date of Birth<span class="asterisk">*</span>:</label>
+                            <input type="text" placeholder="DD"> / 
+                            <input type="text" placeholder="MM"> / 
+                            <input type="text" class="year" placeholder="YYYY">
+                        </div>
+                        <div style="margin-top:20px;">
+                            <input type="checkbox" id="data-mgmt" checked>
+                            <label for="data-mgmt" style="color:var(--text-dark); font-weight:normal;">Save CareAI Consultation History</label>
+                        </div>
+                    </div>
+                    <div class="profile-pic-area">
+                        <p>Profile Picture:</p>
+                        <img src="icon.png" alt="Profile Icon">
+                        <p style="font-size:0.8rem; cursor:pointer;">📷 Change Photo</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="password" class="settings-view">
+                <div class="profile-header">Security: Password</div>
+                <div class="field-group"><label>Old Password:</label><input type="password"></div>
+                <div class="field-group"><label>New Password:</label><input type="password"></div>
+                <button class="btn-action">Update Password</button>
+            </div>
+
+            <div id="2fa" class="settings-view">
+                <div class="profile-header">Two-Factor Authentication</div>
+                <input type="checkbox" id="enable-2fa"> <label for="enable-2fa">Enable 2FA via SMS</label>
+            </div>
+
+            <div id="allergies" class="settings-view">
+                <div class="profile-header">Medical Allergies</div>
+                <p>Select all known allergies:</p>
+                <div><input type="checkbox" id="al-p"> <label for="al-p">Paracetamol</label></div>
+                <div><input type="checkbox" id="al-m"> <label for="al-m">Metformin</label></div>
+                <div><input type="checkbox" id="al-i"> <label for="al-i">Ibuprofen</label></div>
+                <div><input type="checkbox" id="al-pen"> <label for="al-pen">Penicillin</label></div>
+            </div>
+
+            <div id="history" class="settings-view">
+                <div class="profile-header">Prescription History</div>
+                <div class="log-item"><strong>14/04/26</strong> - Milk of Magnesium 50mL</div>
+                <div class="log-item"><strong>10/04/26</strong> - Panadol Fever Express 1pk</div>
+                <div class="log-item"><strong>04/03/26</strong> - Vitagreen Lingzhi 2pk</div>
+                <div class="log-item"><strong>16/12/25</strong> - Levothyroxine 17.5g</div>
+            </div>
+
+            <div id="location" class="settings-view">
+                <div class="profile-header">Location Settings</div>
+                <input type="checkbox" id="gps-track" checked> <label for="gps-track">Allow GPS tracking for nearby pharmacies</label>
+            </div>
+
+            <div id="careai-log" class="settings-view">
+                <div class="profile-header">CareAI Consultation Log</div>
+                <div class="log-item"><em>2026-04-26 14:30</em> - Query: Symptoms of Iron deficiency</div>
+                <div class="log-item"><em>2026-04-15 09:12</em> - Query: Best magnesium for sleep</div>
+                <div class="log-item"><em>2026-03-04 18:45</em> - Query: Magnesium Glycinate vs Citrate</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId, element) {
+            document.querySelectorAll('.settings-view').forEach(view => {
+                view.classList.remove('active');
+            });
+            document.querySelectorAll('.sidebar ul li a').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            document.getElementById(sectionId).classList.add('active');
+            element.classList.add('active');
+        }
+    </script>
+</body>
+</html>
