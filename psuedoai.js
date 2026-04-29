@@ -13,6 +13,7 @@ function dispatch_messages(messageArray) {
 }
 
 function generate_response(x) {
+    let check = 0
     const inp = String(x).toLowerCase();
     
     const foodData = {
@@ -85,8 +86,11 @@ function generate_response(x) {
         let s3 = `Step 3: Finally, ${getRandom(actions.combine)} the ${selected[2].toLowerCase()} and serve ${getRandom(servingStyles)}`;
         let s4 = `Enjoy your meal!`;
         dispatch_messages([msg1, msg2, msg3, msg4, s1, s2, s3, s4]);
-        return null;
+        check = 1
     }
+if (check===0){
+    dispatch_messages(["I do understand your query!"],["Try inputting the following:"],["How do I get more vitamin B?"],["Where can I find (supplement name)?"],["I'm feeling a bit unwell."],["Please generate a 500 kcal healthy meal recipe."])
+}
+    
 
-    return "Please specify a calorie target.";
 }
