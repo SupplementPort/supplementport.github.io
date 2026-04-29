@@ -88,8 +88,52 @@ function generate_response(x) {
         dispatch_messages([msg1, msg2, msg3, msg4, s1, s2, s3, s4]);
         check = 1
     }
+    const symptomMap = {
+        "headache": ["Magnesium", "Riboflavin (B2)", "Water", "Coenzyme Q10"],
+        "migraine": ["Magnesium", "Riboflavin (B2)", "Water", "Coenzyme Q10"],
+        "stomach": ["Dietary Fiber", "Probiotics", "Zinc", "Vitamin B12"],
+        "belly": ["Dietary Fiber", "Probiotics", "Zinc", "Vitamin B12"],
+        "digestion": ["Dietary Fiber", "Probiotics", "Zinc", "Vitamin B12"],
+        "hip": ["Vitamin D", "Calcium", "Vitamin K2", "Magnesium"],
+        "bone": ["Vitamin D", "Calcium", "Vitamin K2", "Magnesium"],
+        "cramp": ["Potassium", "Magnesium", "Calcium", "Sodium (Electrolytes)"],
+        "muscle": ["Potassium", "Magnesium", "Calcium", "Sodium (Electrolytes)"],
+        "fatigue": ["Iron", "Vitamin B12", "Folate", "Magnesium", "Vitamin D"],
+        "tired": ["Iron", "Vitamin B12", "Folate", "Magnesium", "Vitamin D"],
+        "exhausted": ["Iron", "Vitamin B12", "Folate", "Magnesium", "Vitamin D"],
+        "skin": ["Omega-3 Fatty Acids", "Vitamin A", "Vitamin E", "Zinc"],
+        "hair": ["Biotin (B7)", "Iron", "Zinc", "Protein"],
+        "nails": ["Biotin (B7)", "Iron", "Zinc", "Protein"],
+        "gum": ["Vitamin C", "Vitamin K"],
+        "vision": ["Vitamin A"],
+        "eyes": ["Vitamin A"],
+        "mouth": ["Vitamin B12", "Iron", "Folate", "Riboflavin"],
+        "ulcer": ["Vitamin B12", "Iron", "Folate", "Riboflavin"],
+        "joint": ["Omega-3 Fatty Acids", "Vitamin C", "Vitamin D"],
+        "stiff": ["Omega-3 Fatty Acids", "Vitamin C", "Vitamin D"],
+        "tingling": ["Vitamin B12", "Vitamin B6", "Folate"],
+        "numb": ["Vitamin B12", "Vitamin B6", "Folate"],
+        "healing": ["Vitamin C", "Zinc", "Protein"],
+        "fog": ["Omega-3 Fatty Acids", "Iron", "Iodine", "Vitamin B12"],
+        "concentrate": ["Omega-3 Fatty Acids", "Iron", "Iodine", "Vitamin B12"]
+    };
+
+    let foundNutrients = new Set();
+    Object.keys(symptomMap).forEach(symptom => {
+        if (inp.includes(symptom)) {
+            symptomMap[symptom].forEach(n => foundNutrients.add(n));
+        }
+    });
+
+    if (foundNutrients.size > 0) {
+        let nutrientMsgs = ["I've analyzed your symptoms. You might be lacking:"];
+        foundNutrients.forEach(nutr => nutrientMsgs.push(`• ${nutr}`));
+        nutrientMsgs.push("Keep in mind, I'm an AI, not a doctor. Please consult a professional!");
+        dispatch_messages(nutrientMsgs);
+        check = 1;
+    }
 if (check===0){
-    dispatch_messages(["I do understand your query!"],["Try inputting the following:"],["How do I get more vitamin B?"],["Where can I find (supplement name)?"],["I'm feeling a bit unwell."],["Please generate a 500 kcal healthy meal recipe."])
+    dispatch_messages(["I do understand your query!","Try inputting the following:","How do I get more vitamin B?","Where can I find (supplement name)?","I'm feeling a bit unwell.","Please generate a 500 kcal healthy meal recipe."])
 }
     
 
