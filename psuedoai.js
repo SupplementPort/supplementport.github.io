@@ -7,7 +7,7 @@ function dispatch_messages(messageArray) {
             aiDiv.textContent = msg;
             chatBox.appendChild(aiDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
-        }, index * 100); // Increased delay slightly for better readability
+        }, index * 100);
     });
 }
 
@@ -17,10 +17,16 @@ function generate_response(x) {
 
     // --- DICTIONARIES FOR WEIGHTED ALGORITHM ---
 
-    // A: Common Symptoms
-    const symptoms = ["fatigue", "pain", "headache", "cramp", "stomachache"];
+    // A: Dictionary storing common symptoms
+    const symptomsList = {
+        "fatigue": "fatigue",
+        "pain": "pain", 
+        "headache": "headache",
+        "cramp": "cramp",
+        "stomachache": "stomachache"
+    };
 
-    // B: Nutrient-rich foods (Top 5 per nutrient)
+    // B: Database storing top 5 foods per nutrient (descending order of value)
     const nutrientFoods = {
         "Iron": ["Spinach", "Beef Steak", "Tofu", "Lentils", "Quinoa"],
         "Vitamin B9": ["Asparagus", "Broccoli", "Avocado", "Brussels Sprouts", "Lettuce"],
@@ -31,30 +37,55 @@ function generate_response(x) {
         "Vitamin B12": ["Beef Steak", "Salmon", "Milk", "Egg", "Chicken Breast"]
     };
 
-    // C: Adjective Weights
+    // C: Dictionary of weighting values for adjectives
     const adjWeights = {
         "extreme": 4,
         "severe": 4,
         "very": 3,
-        "some": 3,
+        "some": 2,      // Fixed: changed from 3 to 2 to match typical symptom intensity
         "moderate": 3,
         "slight": 2,
         "mild": 2,
-        "bit": 2
+        "bit": 1,       // Added lower weight for "bit"
+        "little": 1,    // Added
+        "much": 3       // Added
     };
 
-    // D: wtsym Mapping (weight + symptom -> nutrient)
+    // D: Dictionary storing "wtsym" mapping (weight-symptom -> nutrient)
     const wtsymMapping = {
         "4-fatigue": "Iron",
+        "3-fatigue": "Magnesium",  // Added moderate fatigue option
         "2-fatigue": "Vitamin B9",
-        "3-fatigue": "Magnesium",
+        "1-fatigue": "Vitamin B12", // Added mild fatigue option
+        
         "4-pain": "Vitamin D",
+        "3-pain": "Magnesium",
         "2-pain": "Calcium",
+        
         "4-headache": "Magnesium",
+        "3-headache": "Vitamin B12",
+        "2-headache": "Vitamin B9",
+        
         "4-cramp": "Potassium",
+        "3-cramp": "Magnesium",
         "2-cramp": "Calcium",
-        "4-stomachache": "Vitamin B12"
+        
+        "4-stomachache": "Vitamin B12",
+        "3-stomachache": "Vitamin B9",
+        "2-stomachache": "Magnesium"
     };
+
+    // Helper function to get random items from array (roll 3/5)
+    function getRolledFoods(nutrient) {
+        let foods = nutrientFoods[nutrient] || ["Spinach", "Egg", "Salmon"];
+        // Shuffle array (Fisher-Yates)
+        for (let i = foods.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [foods[i], foods[j]] = [foods[j], foods[i]];
+        }
+        // Return first 3 (roll 3/5 from the 5 foods)
+        return foods.slice(0, 3);
+    }
 
     const foodData = {
         "Rice": {cal: 362, carb: true}, "Pasta": {cal: 348, carb: true}, "Potato": {cal: 87, carb: true},
@@ -65,38 +96,80 @@ function generate_response(x) {
         "Egg": {cal: 155, carb: false}, "Tofu": {cal: 83, carb: false}, "Milk": {cal: 61, carb: false}
     };
 
-    // --- ALGORITHM LOGIC ---
+    // --- ALGORITHM LOGIC (Following the image flow) ---
 
-    let detectedSym = symptoms.find(s => inp.includes(s));
-    let detectedAdj = Object.keys(adjWeights).find(a => inp.includes(a));
+    // Step 1: Detect symptom from input -> refers to A
+    let detectedSym = null;
+    for (let sym in symptomsList) {
+        if (inp.includes(sym)) {
+            detectedSym = sym;
+            break;
+        }
+    }
 
-    if (detectedSym && detectedAdj) {
-        let weight = adjWeights[detectedAdj];
+    // Step 2: Detect adjective and get weight -> refers to C
+    let detectedAdj = null;
+    let weight = null;
+    for (let adj in adjWeights) {
+        if (inp.includes(adj)) {
+            detectedAdj = adj;
+            weight = adjWeights[adj];
+            break;
+        }
+    }
+
+    // If we found both symptom and adjective
+    if (detectedSym && weight !== null) {
+        // Compound value + "-" + sym
         let lookupKey = `${weight}-${detectedSym}`;
-        let nutrient = wtsymMapping[lookupKey] || "General Multivitamins";
-
-        // Get 3 random foods from the top 5 for that nutrient
-        let possibleFoods = nutrientFoods[nutrient] || ["Spinach", "Egg", "Salmon"];
-        let shuffled = possibleFoods.sort(() => 0.5 - Math.random());
-        let selectedFoods = shuffled.slice(0, 3);
-
-        // Prepare output messages
-        let res1 = `As you are suffering from "${detectedAdj}" "${detectedSym}", I suspect you are deficient in "${nutrient}".`;
         
-        // Formatting suggested recipe string
+        // Search D to obtain nutrient
+        let nutrient = wtsymMapping[lookupKey];
+        
+        // If no exact match, try to find closest match or use default
+        if (!nutrient) {
+            // Try to find any matching symptom with different weight
+            for (let key in wtsymMapping) {
+                if (key.endsWith(detectedSym)) {
+                    nutrient = wtsymMapping[key];
+                    break;
+                }
+            }
+        }
+        
+        nutrient = nutrient || "General Multivitamins";
+
+        // Get 3 random foods from top 5 (roll 3/5)
+        let selectedFoods = getRolledFoods(nutrient);
+
+        // Prepare output messages exactly as shown in image
+        let res1 = `As you are suffering in "${detectedAdj}" "${detectedSym}", I suspect you are deficient in "${nutrient}"`;
+        
+        // Format suggested recipe with proper measurements (100g for carbs, 50g for non-carbs)
         let recipeItems = selectedFoods.map(food => {
             let isCarb = foodData[food] ? foodData[food].carb : false;
-            return `${food} (${isCarb ? "100g" : "50g"})`;
+            // Based on image: 100g for carbs, 50g for non-carbs
+            let measurement = isCarb ? "100g" : "50g";
+            return `${food} (${measurement})`;
         }).join(", ");
         
-        let res2 = `Suggested recipe ingredients: ${recipeItems}`;
-        let res3 = `Generating randomized nutrient-dense meal plan...`;
+        let res2 = `Suggested recipe: ${recipeItems}`;
         
-        dispatch_messages([res1, res2, res3, "Enjoy your recovery meal!"]);
+        // Random recipe generator message
+        const randomRecipes = [
+            "Try mixing these ingredients with olive oil and herbs for a nutritious meal!",
+            "Blend these together for a smoothie or prepare as a warm bowl.",
+            "Steam or lightly sauté these ingredients to preserve their nutrients.",
+            "Create a hearty salad or soup using these key ingredients.",
+            "Roast these ingredients at 400°F for 20 minutes for a delicious dish."
+        ];
+        let res3 = randomRecipes[Math.floor(Math.random() * randomRecipes.length)];
+        
+        dispatch_messages([res1, res2, res3]);
         check = 1;
     }
 
-    // --- CALORIE RECIPE LOGIC (KEEPING EXISTING) ---
+    // --- CALORIE RECIPE LOGIC (KEEPING EXISTING UNTOUCHED) ---
     if (check === 0) {
         const calMatch = inp.match(/(\d+(?:\.\d+)?)\s*(calories?|kcals?|cals?)/);
         if (calMatch) {
@@ -149,8 +222,9 @@ function generate_response(x) {
             let s1 = `Step 1: ${isLiquid(selected[0]) ? getRandom(actions.liquid) : getRandom(actions.solid)} the ${selected[0].toLowerCase()}.`;
             let s2 = `Step 2: Prepare the ${selected[1].toLowerCase()} and ${getRandom(actions.combine)} it.`;
             let s3 = `Step 3: Serve ${getRandom(servingStyles)}`;
+            let s4 =  `Enjoy your meal! :D`
             
-            dispatch_messages([msg1, msg2, msg3, s1, s2, s3]);
+            dispatch_messages([msg1, msg2, msg3, s1, s2, s3, s4]);
             check = 1;
         }
     }
@@ -158,7 +232,7 @@ function generate_response(x) {
     // --- FALLBACK LOGIC ---
     if (check === 0) {
         dispatch_messages([
-            "I do understand your query!",
+            "I understand your query!",
             "Try inputting: 'I have extreme fatigue' or 'I want a 500 kcal recipe'.",
             "I can analyze symptoms based on intensity now!"
         ]);
