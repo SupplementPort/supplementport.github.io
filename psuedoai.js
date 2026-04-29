@@ -660,32 +660,39 @@ function generate_response(x, showStorePanelCallback) {
         
         // Check for specific nutrients in order of specificity
         const nutrientPatterns = [
-            { pattern: /vitamin\s+(?:b12|b-12|cobalamin|methylcobalamin)/, nutrient: "vitamin b12" },
-            { pattern: /vitamin\s+(?:b9|b-9|folate|folic\s*acid)/, nutrient: "vitamin b9" },
-            { pattern: /vitamin\s+(?:b6|b-6|pyridoxine)/, nutrient: "vitamin b6" },
-            { pattern: /vitamin\s+(?:b3|b-3|niacin|niacinamide)/, nutrient: "vitamin b3" },
-            { pattern: /vitamin\s+(?:b2|b-2|riboflavin)/, nutrient: "vitamin b2" },
-            { pattern: /vitamin\s+(?:b1|b-1|thiamine)/, nutrient: "vitamin b1" },
-            { pattern: /vitamin\s+(?:b|b\s+complex|b-complex)/, nutrient: "vitamin b" },
-            { pattern: /vitamin\s+(?:c|ascorbic\s*acid)/, nutrient: "vitamin c" },
-            { pattern: /vitamin\s+(?:d3?|calciferol)/, nutrient: "vitamin d" },
-            { pattern: /vitamin\s+(?:e|tocopherol)/, nutrient: "vitamin e" },
-            { pattern: /vitamin\s+(?:k2?|phylloquinone|menaquinone)/, nutrient: "vitamin k" },
-            { pattern: /vitamin\s+a\b/, nutrient: "vitamin a" },
-            { pattern: /\bcalcium\b/, nutrient: "calcium" },
-            { pattern: /\bmagnesium\b/, nutrient: "magnesium" },
-            { pattern: /\bpotassium\b/, nutrient: "potassium" },
-            { pattern: /\biron\b(?!\s*deficiency)/, nutrient: "iron" },
-            { pattern: /\bzinc\b/, nutrient: "zinc" },
-            { pattern: /\b(?:folate|folic\s*acid)\b/, nutrient: "folate" },
-            { pattern: /\b(?:fiber|fibre|dietary\s*fiber|roughage)\b/, nutrient: "fiber" },
-            { pattern: /\b(?:probiotic|probiotics|gut\s*health)\b/, nutrient: "probiotics" },
-            { pattern: /\biodine\b/, nutrient: "iodine" },
-            { pattern: /\bselenium\b/, nutrient: "selenium" },
-            { pattern: /\bcopper\b/, nutrient: "copper" },
-            { pattern: /\bchromium\b/, nutrient: "chromium" },
-            { pattern: /\b(?:omega\s*3|omega-3|fish\s*oil|epa|dha)\b/, nutrient: "omega 3" }
-        ];
+    // B-Vitamins (Specific first)
+    { pattern: /vitamin\s*(?:b12|b-12|cobalamin|methylcobalamin)/i, nutrient: "vitamin b12" },
+    { pattern: /(?:vitamin\s*(?:b9|b-9)|folate|folic\s*acid)/i, nutrient: "vitamin b9" },
+    { pattern: /vitamin\s*(?:b6|b-6|pyridoxine)/i, nutrient: "vitamin b6" },
+    { pattern: /vitamin\s*(?:b3|b-3|niacin|niacinamide)/i, nutrient: "vitamin b3" },
+    { pattern: /vitamin\s*(?:b2|b-2|riboflavin)/i, nutrient: "vitamin b2" },
+    { pattern: /vitamin\s*(?:b1|b-1|thiamine)/i, nutrient: "vitamin b1" },
+    { pattern: /vitamin\s*(?:b|b[- ]*complex)/i, nutrient: "vitamin b" },
+
+    // Standard Vitamins
+    { pattern: /vitamin\s*(?:c|ascorbic\s*acid)/i, nutrient: "vitamin c" },
+    { pattern: /vitamin\s*(?:d3?|calciferol|cholecalciferol)/i, nutrient: "vitamin d" },
+    { pattern: /vitamin\s*(?:e|tocopherol)/i, nutrient: "vitamin e" },
+    { pattern: /vitamin\s*(?:k[12]?|phylloquinone|menaquinone)/i, nutrient: "vitamin k" },
+    { pattern: /\bvitamin\s*a\b/i, nutrient: "vitamin a" },
+
+    // Minerals & Elements
+    { pattern: /\bcalcium\b/i, nutrient: "calcium" },
+    { pattern: /\bmagnesium\b/i, nutrient: "magnesium" },
+    { pattern: /\bpotassium\b/i, nutrient: "potassium" },
+    { pattern: /\biron\b(?!\s*deficiency)/i, nutrient: "iron" },
+    { pattern: /\bzinc\b/i, nutrient: "zinc" },
+    { pattern: /\biodine\b/i, nutrient: "iodine" },
+    { pattern: /\bselenium\b/i, nutrient: "selenium" },
+    { pattern: /\bcopper\b/i, nutrient: "copper" },
+    { pattern: /\bchromium\b/i, nutrient: "chromium" },
+
+    // Specialized Nutrients
+    { pattern: /\b(?:fiber|fibre|dietary\s*fiber|roughage)\b/i, nutrient: "fiber" },
+    { pattern: /\b(?:probiotic|probiotics|gut\s*health|lactobacillus|bifidobacterium)\b/i, nutrient: "probiotics" },
+    { pattern: /\b(?:omega[- ]*3|fish\s*oil|epa|dha)\b/i, nutrient: "omega 3" },
+    { pattern: /\b(?:psyllium|ispaghula)\b/i, nutrient: "fiber" }
+];
         
         // Try to match patterns
         for (let pattern of nutrientPatterns) {
