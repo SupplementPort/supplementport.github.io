@@ -519,7 +519,7 @@ function generate_response(x) {
     // --- FALLBACK LOGIC ---
     if (check === 0) {
         dispatch_messages([
-            "I understand your query!",
+            "I don't understand your query! :(",
             "Try inputting something like:",
             "• 'I have extreme fatigue'",
             "• 'I feel very anxious'",
