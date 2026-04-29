@@ -567,7 +567,7 @@ function generate_response(x, showStorePanelCallback) {
         check = 1;
     }
 
-    // --- CALORIE RECIPE LOGIC (UNTOUCHED) ---
+    // --- CALORIE RECIPE LOGIC ---
     if (check === 0) {
         const calMatch = inp.match(/(\d+(?:\.\d+)?)\s*(calories?|kcals?|cals?)/);
         if (calMatch) {
@@ -627,67 +627,47 @@ function generate_response(x, showStorePanelCallback) {
         }
     }
 
-
+    // --- SUPPLEMENT REQUEST FEATURE - NOW TRIGGERS ON ANY NUTRIENT MENTION ---
+    // This runs when check is still 0 (no symptom or calorie request matched)
     
-   
+    if (check === 0) {
+        // Comprehensive list of all supplement nutrients for detection
+        const allSupplementNutrients = [
+            "vitamin a", "vitamin b", "vitamin b1", "vitamin b2", "vitamin b3", "vitamin b5", 
+            "vitamin b6", "vitamin b7", "vitamin b9", "vitamin b12", "vitamin c", "vitamin d", 
+            "vitamin e", "vitamin k", "calcium", "magnesium", "potassium", "iron", "zinc", 
+            "folate", "omega 3", "omega-3", "fiber", "fibre", "probiotics", "iodine", 
+            "selenium", "copper", "chromium"
+        ];
         
-  const nutrientPatterns = [
-    // B-vitamins (specific codes first to prevent partial matching)
-    { pattern: /vitamin\s*(?:b12|b-12|cobalamin|methylcobalamin)/i, nutrient: "vitamin b12" },
-    { pattern: /(?:vitamin\s*(?:b9|b-9)|folate|folic\s*acid)/i, nutrient: "vitamin b9" },
-    { pattern: /vitamin\s*(?:b6|b-6|pyridoxine)/i, nutrient: "vitamin b6" },
-    { pattern: /vitamin\s*(?:b3|b-3|niacin|niacinamide)/i, nutrient: "vitamin b3" },
-    { pattern: /vitamin\s*(?:b2|b-2|riboflavin)/i, nutrient: "vitamin b2" },
-    { pattern: /vitamin\s*(?:b1|b-1|thiamine)/i, nutrient: "vitamin b1" },
-    { pattern: /vitamin\s*(?:b|b[- ]*complex)/i, nutrient: "vitamin b" },
-
-    // Standard vitamins
-    { pattern: /vitamin\s*(?:c|ascorbic\s*acid)/i, nutrient: "vitamin c" },
-    { pattern: /vitamin\s*(?:d3?|calciferol|cholecalciferol)/i, nutrient: "vitamin d" },
-    { pattern: /vitamin\s*(?:e|tocopherol)/i, nutrient: "vitamin e" },
-    { pattern: /vitamin\s*(?:k[12]?|phylloquinone|menaquinone)/i, nutrient: "vitamin k" },
-    { pattern: /\bvitamin\s*a\b/i, nutrient: "vitamin a" },
-
-    // Minerals
-    { pattern: /\bcalcium\b/i, nutrient: "calcium" },
-    { pattern: /\bmagnesium\b/i, nutrient: "magnesium" },
-    { pattern: /\bpotassium\b/i, nutrient: "potassium" },
-    { pattern: /\biron\b(?!\s*deficiency)/i, nutrient: "iron" },
-    { pattern: /\bzinc\b/i, nutrient: "zinc" },
-    { pattern: /\biodine\b/i, nutrient: "iodine" },
-    { pattern: /\bselenium\b/i, nutrient: "selenium" },
-    { pattern: /\bcopper\b/i, nutrient: "copper" },
-    { pattern: /\bchromium\b/i, nutrient: "chromium" },
-
-    // The Fix: Omega 3 (Handles "omega 3", "omega-3", "omega3", "fish oil", "EPA", "DHA")
-    { pattern: /\b(?:omega[- ]*3|fish\s*oil|epa|dha)\b/i, nutrient: "omega 3" },
-
-    // Specialized
-    { pattern: /\b(?:fiber|fibre|dietary\s*fiber|roughage|psyllium)\b/i, nutrient: "fiber" },
-    { pattern: /\b(?:probiotic|probiotics|gut\s*health|lactobacillus|bifidobacterium)\b/i, nutrient: "probiotics" }
-];
+        let detectedNutrient = null;
         
-        // Try to match patterns
-        for (let pattern of nutrientPatterns) {
-            if (pattern.pattern.test(inp)) {
-                detectedNutrient = pattern.nutrient;
+        // Check for each nutrient in the input
+        for (let nutrient of allSupplementNutrients) {
+            if (inp.includes(nutrient)) {
+                detectedNutrient = nutrient;
                 break;
             }
         }
         
-        // Also check for standalone nutrient names
+        // Also check for common variations
         if (!detectedNutrient) {
-            const simpleNutrients = ["calcium", "magnesium", "potassium", "iron", "zinc", "folate", "fiber", "fibre", "probiotics", "iodine", "selenium", "copper", "chromium"];
-            for (let nutrient of simpleNutrients) {
-                if (inp.includes(nutrient)) {
-                    detectedNutrient = nutrient;
-                    break;
-                }
-            }
+            if (inp.includes("b12") || inp.includes("b-12")) detectedNutrient = "vitamin b12";
+            else if (inp.includes("b9") || inp.includes("b-9")) detectedNutrient = "vitamin b9";
+            else if (inp.includes("b6") || inp.includes("b-6")) detectedNutrient = "vitamin b6";
+            else if (inp.includes("b3") || inp.includes("b-3")) detectedNutrient = "vitamin b3";
+            else if (inp.includes("b2") || inp.includes("b-2")) detectedNutrient = "vitamin b2";
+            else if (inp.includes("b1") || inp.includes("b-1")) detectedNutrient = "vitamin b1";
+            else if (inp.includes("b complex") || inp.includes("b-complex")) detectedNutrient = "vitamin b";
+            else if (inp.includes("c") && !inp.includes("vitamin") && inp.length < 10) detectedNutrient = "vitamin c";
+            else if (inp.includes("d3")) detectedNutrient = "vitamin d";
+            else if (inp.includes("k2")) detectedNutrient = "vitamin k";
+            else if (inp.includes("fish oil")) detectedNutrient = "omega 3";
+            else if (inp.includes("epa") || inp.includes("dha")) detectedNutrient = "omega 3";
         }
         
         // If a nutrient was detected, output supplement info with map
-        
+        if (detectedNutrient) {
             // Normalize nutrient name for lookup
             let lookupNutrient = detectedNutrient;
             if (lookupNutrient === "fibre") lookupNutrient = "fiber";
@@ -724,8 +704,8 @@ function generate_response(x, showStorePanelCallback) {
                     window.showStorePanel("Mannings (Central)", `${lookupNutrient.toUpperCase()} Supplement`, 22.28123, 114.15678, "Shop 101-102, Central Building, 1-3 Pedder Street, Central, Hong Kong");
                 }
                 check = 1;
-            
-        
+            }
+        }
     }
     
     // --- FALLBACK LOGIC ---
@@ -738,8 +718,8 @@ function generate_response(x, showStorePanelCallback) {
             "• 💩 'I have diarrhea'",
             "• 😴 'I have extreme fatigue'",
             "• 🔥 'I want a 500 kcal recipe'",
-            "• 💊 'magnesium supplement' or 'where to buy calcium'",
-            "✨ I can analyze many symptoms and recommend supplements!"
+            "• 💊 'magnesium' or 'vitamin d' or 'calcium'",
+            "✨ I can analyze symptoms, create recipes, and recommend supplements!"
         ]);
     }
 }
