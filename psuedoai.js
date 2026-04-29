@@ -7,7 +7,7 @@ function dispatch_messages(messageArray) {
             aiDiv.textContent = msg;
             chatBox.appendChild(aiDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
-        }, index * 500); // Increased delay slightly for better readability
+        }, index * 100); // Increased delay slightly for better readability
     });
 }
 
