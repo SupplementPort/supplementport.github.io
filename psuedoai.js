@@ -49,6 +49,10 @@ function generate_response(x) {
         "abdominal pain": "stomachache",
         "indigestion": "stomachache",
         "bloating": "stomachache",
+        "constipation": "constipation",
+        "irregular bowel": "constipation",
+        "diarrhea": "diarrhea",
+        "loose stool": "diarrhea",
         
         // Additional common symptoms
         "dizziness": "dizziness",
@@ -57,12 +61,6 @@ function generate_response(x) {
         
         "nausea": "nausea",
         "queasy": "nausea",
-        
-        "constipation": "constipation",
-        "irregular bowel": "constipation",
-        
-        "diarrhea": "diarrhea",
-        "loose stool": "diarrhea",
         
         "insomnia": "insomnia",
         "can't sleep": "insomnia",
@@ -127,7 +125,7 @@ function generate_response(x) {
     // B: Nutrient-rich foods (Top 5 per nutrient)
     const nutrientFoods = {
         "Iron": ["Spinach", "Beef Steak", "Tofu", "Lentils", "Quinoa"],
-        "Vitamin B9": ["Asparagus", "Broccoli", "Avocado", "Brussels Sprouts", "Lettuce"],
+        "Folate": ["Asparagus", "Broccoli", "Avocado", "Brussels Sprouts", "Lettuce"],
         "Magnesium": ["Dark Chocolate", "Almonds", "Black Beans", "Pumpkin Seeds", "Yogurt"],
         "Vitamin D": ["Salmon", "Egg", "Milk", "Mushrooms", "Sardines"],
         "Calcium": ["Milk", "Cheese", "Tofu", "Chia Seeds", "Kale"],
@@ -137,18 +135,16 @@ function generate_response(x) {
         "Vitamin C": ["Orange", "Bell Pepper", "Broccoli", "Strawberry", "Kiwi"],
         "Vitamin A": ["Carrot", "Sweet Potato", "Spinach", "Kale", "Pumpkin"],
         "Vitamin E": ["Almonds", "Sunflower Seeds", "Spinach", "Avocado", "Peanuts"],
-        "Vitamin K": ["Kale", "Spinach", "Broccoli", "Brussels Sprouts", "Cabbage"],
         "Omega-3": ["Salmon", "Sardines", "Walnuts", "Flaxseeds", "Chia Seeds"],
         "Iodine": ["Seaweed", "Cod", "Yogurt", "Milk", "Egg"],
         "Selenium": ["Brazil Nuts", "Tuna", "Sardines", "Egg", "Sunflower Seeds"],
-        "Copper": ["Beef Liver", "Oysters", "Shiitake Mushrooms", "Cashews", "Chickpeas"],
-        "Manganese": ["Pecans", "Pineapple", "Brown Rice", "Spinach", "Sweet Potato"],
-        "Chromium": ["Broccoli", "Grapes", "Potatoes", "Garlic", "Basil"],
-        "Molybdenum": ["Legumes", "Lentils", "Peas", "Cauliflower", "Spinach"],
-        "Phosphorus": ["Salmon", "Yogurt", "Turkey", "Chicken", "Pumpkin Seeds"]
+        "Dietary Fiber": ["Oats", "Lentils", "Chia Seeds", "Broccoli", "Apple"],
+        "Probiotics": ["Yogurt", "Kefir", "Kimchi", "Sauerkraut", "Kombucha"],
+        "Vitamin B6": ["Chicken Breast", "Banana", "Potato", "Spinach", "Sunflower Seeds"],
+        "Sodium": ["Sea Salt", "Pickles", "Olives", "Celery", "Beets"]
     };
 
-    // C: Dictionary of weighting values for adjectives (expanded with grammatical variations)
+    // C: Dictionary of weighting values for adjectives (expanded)
     const adjWeights = {
         // Severe intensities
         "extreme": 4,
@@ -156,21 +152,15 @@ function generate_response(x) {
         "severe": 4,
         "severely": 4,
         "agonizing": 4,
-        "agonizingly": 4,
         "debilitating": 4,
         "unbearable": 4,
-        "unbearably": 4,
         "crippling": 4,
         "intense": 4,
-        "intensely": 4,
         "acute": 4,
         "chronic": 4,
         "terrible": 4,
-        "terribly": 4,
         "horrible": 4,
-        "horribly": 4,
         "awful": 4,
-        "awfully": 4,
         
         // Moderate-high intensities
         "very": 3,
@@ -178,52 +168,30 @@ function generate_response(x) {
         "pretty": 3,
         "rather": 3,
         "significant": 3,
-        "significantly": 3,
         "moderate": 3,
-        "moderately": 3,
         "considerable": 3,
-        "considerably": 3,
         "really": 3,
-        "super": 3,
         "highly": 3,
         
         // Moderate intensities
         "some": 2,
         "somewhat": 2,
         "noticeable": 2,
-        "noticeably": 2,
         "occasional": 2,
-        "occasionally": 2,
         "intermittent": 2,
         "regular": 2,
-        "regularly": 2,
         "fairly": 2,
         
         // Mild intensities
-        "slight": 2,
-        "slightly": 2,
-        "mild": 2,
-        "mildly": 2,
+        "slight": 1,
+        "slightly": 1,
+        "mild": 1,
+        "mildly": 1,
         "little": 1,
         "bit": 1,
         "minor": 1,
-        "minorly": 1,
         "tiny": 1,
-        "subtle": 1,
-        "subtly": 1,
-        
-        // Contextual intensifiers
-        "much": 3,
-        "lot": 3,
-        "constant": 3,
-        "constantly": 3,
-        "persistent": 3,
-        "persistently": 3,
-        "frequent": 2,
-        "frequently": 2,
-        "often": 2,
-        "always": 3,
-        "never ending": 3
+        "subtle": 1
     };
 
     // D: Dictionary storing "wtsym" mapping (weight-symptom -> nutrient)
@@ -231,7 +199,7 @@ function generate_response(x) {
         // Fatigue mappings
         "4-fatigue": "Iron",
         "3-fatigue": "Magnesium",
-        "2-fatigue": "Vitamin B9",
+        "2-fatigue": "Folate",
         "1-fatigue": "Vitamin B12",
         
         // Pain mappings
@@ -243,7 +211,7 @@ function generate_response(x) {
         // Headache mappings
         "4-headache": "Magnesium",
         "3-headache": "Vitamin B12",
-        "2-headache": "Vitamin B9",
+        "2-headache": "Folate",
         "1-headache": "Vitamin D",
         
         // Cramp mappings
@@ -253,10 +221,22 @@ function generate_response(x) {
         "1-cramp": "Sodium",
         
         // Stomachache mappings
-        "4-stomachache": "Vitamin B12",
-        "3-stomachache": "Vitamin B9",
-        "2-stomachache": "Magnesium",
-        "1-stomachache": "Zinc",
+        "4-stomachache": "Probiotics",
+        "3-stomachache": "Magnesium",
+        "2-stomachache": "Zinc",
+        "1-stomachache": "Folate",
+        
+        // Constipation mappings
+        "4-constipation": "Dietary Fiber",
+        "3-constipation": "Magnesium",
+        "2-constipation": "Potassium",
+        "1-constipation": "Probiotics",
+        
+        // Diarrhea mappings
+        "4-diarrhea": "Probiotics",
+        "3-diarrhea": "Zinc",
+        "2-diarrhea": "Potassium",
+        "1-diarrhea": "Magnesium",
         
         // Dizziness mappings
         "4-dizziness": "Iron",
@@ -270,18 +250,6 @@ function generate_response(x) {
         "2-nausea": "Zinc",
         "1-nausea": "Potassium",
         
-        // Constipation mappings
-        "4-constipation": "Magnesium",
-        "3-constipation": "Fiber",
-        "2-constipation": "Potassium",
-        "1-constipation": "Vitamin C",
-        
-        // Diarrhea mappings
-        "4-diarrhea": "Zinc",
-        "3-diarrhea": "Potassium",
-        "2-diarrhea": "Magnesium",
-        "1-diarrhea": "Vitamin B12",
-        
         // Insomnia mappings
         "4-insomnia": "Magnesium",
         "3-insomnia": "Vitamin D",
@@ -291,31 +259,31 @@ function generate_response(x) {
         // Anxiety mappings
         "4-anxiety": "Magnesium",
         "3-anxiety": "Vitamin B12",
-        "2-anxiety": "Vitamin B9",
+        "2-anxiety": "Folate",
         "1-anxiety": "Zinc",
         
         // Depression mappings
         "4-depression": "Vitamin D",
         "3-depression": "Vitamin B12",
         "2-depression": "Magnesium",
-        "1-depression": "Vitamin B9",
+        "1-depression": "Folate",
         
         // Brain fog mappings
         "4-brainfog": "Vitamin B12",
         "3-brainfog": "Iron",
         "2-brainfog": "Magnesium",
-        "1-brainfog": "Vitamin B9",
+        "1-brainfog": "Folate",
         
         // Joint pain mappings
         "4-jointpain": "Vitamin D",
-        "3-jointpain": "Calcium",
-        "2-jointpain": "Magnesium",
-        "1-jointpain": "Vitamin C",
+        "3-jointpain": "Omega-3",
+        "2-jointpain": "Calcium",
+        "1-jointpain": "Magnesium",
         
         // Back pain mappings
         "4-backpain": "Vitamin D",
-        "3-backpain": "Calcium",
-        "2-backpain": "Magnesium",
+        "3-backpain": "Magnesium",
+        "2-backpain": "Calcium",
         "1-backpain": "Potassium",
         
         // Hair loss mappings
@@ -326,20 +294,20 @@ function generate_response(x) {
         
         // Dry skin mappings
         "4-dryskin": "Vitamin E",
-        "3-dryskin": "Vitamin A",
-        "2-dryskin": "Zinc",
-        "1-dryskin": "Omega-3",
+        "3-dryskin": "Omega-3",
+        "2-dryskin": "Vitamin A",
+        "1-dryskin": "Zinc",
         
         // Brittle nails mappings
         "4-brittlenails": "Iron",
         "3-brittlenails": "Calcium",
-        "2-brittlenails": "Vitamin D",
-        "1-brittlenails": "Zinc",
+        "2-brittlenails": "Zinc",
+        "1-brittlenails": "Vitamin D",
         
         // Cold intolerance mappings
         "4-coldintolerance": "Iron",
-        "3-coldintolerance": "Vitamin B12",
-        "2-coldintolerance": "Iodine",
+        "3-coldintolerance": "Iodine",
+        "2-coldintolerance": "Vitamin B12",
         "1-coldintolerance": "Magnesium",
         
         // Shortness of breath mappings
@@ -351,8 +319,8 @@ function generate_response(x) {
         // Palpitations mappings
         "4-palpitations": "Magnesium",
         "3-palpitations": "Potassium",
-        "2-palpitations": "Calcium",
-        "1-palpitations": "Iron",
+        "2-palpitations": "Iron",
+        "1-palpitations": "Calcium",
         
         // Tingling/numbness mappings
         "4-tingling": "Vitamin B12",
@@ -364,7 +332,7 @@ function generate_response(x) {
         "4-mouthsores": "Vitamin B12",
         "3-mouthsores": "Iron",
         "2-mouthsores": "Zinc",
-        "1-mouthsores": "Vitamin B9",
+        "1-mouthsores": "Folate",
         
         // Poor appetite mappings
         "4-poorappetite": "Zinc",
@@ -387,7 +355,7 @@ function generate_response(x) {
 
     // Helper function to get random items from array (roll 3/5)
     function getRolledFoods(nutrient) {
-        let foods = nutrientFoods[nutrient] || ["Spinach", "Egg", "Salmon"];
+        let foods = nutrientFoods[nutrient] || ["Spinach", "Egg", "Salmon", "Broccoli", "Yogurt"];
         // Shuffle array (Fisher-Yates)
         for (let i = foods.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -399,62 +367,43 @@ function generate_response(x) {
 
     // Helper function to get grammatically correct adjective form
     function getGrammaticalAdjective(adj) {
-        // Remove adverb endings for better grammar
-        let baseAdj = adj.replace(/ly$/, '');
-        
-        // Common grammatical mappings
         const grammarMap = {
             "extreme": "extreme",
             "extremely": "extreme",
             "severe": "severe",
             "severely": "severe",
             "agonizing": "agonizing",
-            "agonizingly": "agonizing",
             "debilitating": "debilitating",
             "unbearable": "unbearable",
-            "unbearably": "unbearable",
             "crippling": "crippling",
             "intense": "intense",
-            "intensely": "intense",
             "acute": "acute",
+            "chronic": "chronic",
             "terrible": "terrible",
-            "terribly": "terrible",
             "horrible": "horrible",
-            "horribly": "horrible",
             "awful": "awful",
-            "awfully": "awful",
+            "very": "very",
+            "quite": "quite",
+            "pretty": "pretty",
+            "rather": "rather",
             "significant": "significant",
-            "significantly": "significant",
             "moderate": "moderate",
-            "moderately": "moderate",
             "considerable": "considerable",
-            "considerably": "considerable",
+            "really": "really",
+            "some": "some",
+            "somewhat": "somewhat",
             "noticeable": "noticeable",
-            "noticeably": "noticeable",
             "occasional": "occasional",
-            "occasionally": "occasional",
-            "intermittent": "intermittent",
             "regular": "regular",
-            "regularly": "regular",
-            "persistent": "persistent",
-            "persistently": "persistent",
-            "frequent": "frequent",
-            "frequently": "frequent",
-            "constant": "constant",
-            "constantly": "constant",
             "slight": "slight",
             "slightly": "slight",
             "mild": "mild",
             "mildly": "mild",
-            "minor": "minor",
-            "minorly": "minor",
-            "subtle": "subtle",
-            "subtly": "subtle",
-            "some": "some",
-            "somewhat": "some"
+            "little": "little",
+            "bit": "bit",
+            "minor": "minor"
         };
-        
-        return grammarMap[adj] || baseAdj;
+        return grammarMap[adj] || adj.replace(/ly$/, '');
     }
 
     const foodData = {
@@ -467,12 +416,13 @@ function generate_response(x) {
         "Orange": {cal: 47, carb: true}, "Bell Pepper": {cal: 31, carb: false}, "Strawberry": {cal: 32, carb: true},
         "Kiwi": {cal: 61, carb: true}, "Kale": {cal: 49, carb: false}, "Cabbage": {cal: 25, carb: false},
         "Almonds": {cal: 579, carb: false}, "Walnuts": {cal: 654, carb: false}, "Cashews": {cal: 553, carb: false},
-        "Banana": {cal: 89, carb: true}, "Pumpkin Seeds": {cal: 559, carb: false}, "Chia Seeds": {cal: 486, carb: false}
+        "Banana": {cal: 89, carb: true}, "Pumpkin Seeds": {cal: 559, carb: false}, "Chia Seeds": {cal: 486, carb: false},
+        "Oats": {cal: 389, carb: true}, "Apple": {cal: 52, carb: true}, "Yogurt": {cal: 59, carb: false}
     };
 
-    // --- ALGORITHM LOGIC (Following the image flow) ---
+    // --- ALGORITHM LOGIC ---
 
-    // Step 1: Detect symptom from input -> refers to A
+    // Step 1: Detect symptom from input
     let detectedSym = null;
     let originalSymptom = null;
     for (let sym in symptomsList) {
@@ -496,11 +446,11 @@ function generate_response(x) {
             }
         }
         
-        // If no adjective found, use default "moderate" with weight 2
-        let finalAdjDisplay = "moderate";
-        let finalWeight = 2;
+        // CRITICAL FIX: Set default when no adjective found
+        let finalAdjDisplay = "some";
+        let finalWeight = 2; // Default moderate weight
         
-        if (detectedAdj) {
+        if (detectedAdj !== null) {
             finalWeight = weight;
             finalAdjDisplay = detectedAdj;
         }
@@ -514,9 +464,8 @@ function generate_response(x) {
         // Search D to obtain nutrient
         let nutrient = wtsymMapping[lookupKey];
         
-        // If no exact match, try to find closest match
+        // If no exact match, try to find any mapping with this symptom
         if (!nutrient) {
-            // Try to find any matching symptom with a close weight
             for (let key in wtsymMapping) {
                 if (key.endsWith(detectedSym)) {
                     nutrient = wtsymMapping[key];
@@ -525,21 +474,23 @@ function generate_response(x) {
             }
         }
         
-        // If still no match, use default based on symptom
+        // Final fallback nutrients by symptom
         if (!nutrient) {
             const defaultNutrients = {
                 "fatigue": "Iron",
-                "pain": "Vitamin D",
+                "pain": "Magnesium",
                 "headache": "Magnesium",
                 "cramp": "Potassium",
-                "stomachache": "Vitamin B12",
+                "stomachache": "Probiotics",
+                "constipation": "Dietary Fiber",
+                "diarrhea": "Probiotics",
                 "dizziness": "Iron",
                 "nausea": "Vitamin B6",
                 "insomnia": "Magnesium",
                 "anxiety": "Magnesium",
                 "depression": "Vitamin D",
                 "brainfog": "Vitamin B12",
-                "jointpain": "Vitamin D",
+                "jointpain": "Omega-3",
                 "backpain": "Vitamin D",
                 "hairloss": "Iron",
                 "dryskin": "Vitamin E",
@@ -559,10 +510,10 @@ function generate_response(x) {
         // Get 3 random foods from top 5 (roll 3/5)
         let selectedFoods = getRolledFoods(nutrient);
 
-        // Prepare output messages with proper grammar
+        // Prepare output messages
         let res1 = `As you are suffering from "${grammaticalAdj}" "${originalSymptom}", I suspect you may be deficient in "${nutrient}".`;
         
-        // Format suggested recipe with proper measurements (100g for carbs, 50g for non-carbs)
+        // Format suggested recipe with measurements
         let recipeItems = selectedFoods.map(food => {
             let isCarb = foodData[food] ? foodData[food].carb : false;
             let measurement = isCarb ? "100g" : "50g";
@@ -571,7 +522,7 @@ function generate_response(x) {
         
         let res2 = `Suggested recipe: ${recipeItems}`;
         
-        // Random recipe generator messages (expanded)
+        // Random recipe generator
         const randomRecipes = [
             "Try mixing these ingredients with olive oil and herbs for a nutritious meal!",
             "Blend these together for a smoothie or prepare as a warm bowl.",
@@ -581,21 +532,18 @@ function generate_response(x) {
             "Combine these ingredients in a stir-fry with garlic and ginger.",
             "Make a nutrient-dense smoothie bowl with these ingredients as the base.",
             "These ingredients work great in a breakfast scramble or omelette.",
-            "Prepare a comforting stew with these ingredients and vegetable broth.",
-            "These ingredients are perfect for a Buddha bowl with quinoa or rice.",
-            "Grill these ingredients for a smoky flavor and enjoy with your favorite sauce.",
-            "These ingredients can be blended into a nutrient-packed soup."
+            "Prepare a comforting stew with these ingredients and vegetable broth."
         ];
         let res3 = randomRecipes[Math.floor(Math.random() * randomRecipes.length)];
         
-        // Add a disclaimer note
+        // Add disclaimer
         let res4 = "Note: This is not a medical diagnosis. Please consult a healthcare professional for persistent symptoms.";
         
         dispatch_messages([res1, res2, res3, res4]);
         check = 1;
     }
 
-    // --- CALORIE RECIPE LOGIC (KEEPING EXISTING UNTOUCHED) ---
+    // --- CALORIE RECIPE LOGIC (UNTOUCHED) ---
     if (check === 0) {
         const calMatch = inp.match(/(\d+(?:\.\d+)?)\s*(calories?|kcals?|cals?)/);
         if (calMatch) {
@@ -658,14 +606,14 @@ function generate_response(x) {
     // --- FALLBACK LOGIC ---
     if (check === 0) {
         dispatch_messages([
-            "I understand your query!",
+            "I don't understand your query!",
             "Try inputting something like:",
-            "• 'I have a headache' (no adjective needed!)",
+            "• 'I have a headache'",
+            "• 'I have constipation'", 
+            "• 'I have diarrhea'",
             "• 'I have extreme fatigue'",
-            "• 'I feel very anxious'",
-            "• 'I have chronic headaches'",
             "• 'I want a 500 kcal recipe'",
-            "I can analyze many symptoms including fatigue, pain, headache, cramps, stomach issues, dizziness, anxiety, insomnia, and more!"
+            "I can analyze many symptoms including fatigue, pain, headache, cramps, stomach issues, constipation, diarrhea, dizziness, anxiety, insomnia, and more!"
         ]);
     }
 }
