@@ -148,16 +148,29 @@ function generate_response(x) {
         "Phosphorus": ["Salmon", "Yogurt", "Turkey", "Chicken", "Pumpkin Seeds"]
     };
 
-    // C: Dictionary of weighting values for adjectives (expanded)
+    // C: Dictionary of weighting values for adjectives (expanded with grammatical variations)
     const adjWeights = {
         // Severe intensities
         "extreme": 4,
+        "extremely": 4,
         "severe": 4,
+        "severely": 4,
         "agonizing": 4,
+        "agonizingly": 4,
         "debilitating": 4,
         "unbearable": 4,
+        "unbearably": 4,
         "crippling": 4,
         "intense": 4,
+        "intensely": 4,
+        "acute": 4,
+        "chronic": 4,
+        "terrible": 4,
+        "terribly": 4,
+        "horrible": 4,
+        "horribly": 4,
+        "awful": 4,
+        "awfully": 4,
         
         // Moderate-high intensities
         "very": 3,
@@ -165,32 +178,52 @@ function generate_response(x) {
         "pretty": 3,
         "rather": 3,
         "significant": 3,
+        "significantly": 3,
         "moderate": 3,
+        "moderately": 3,
         "considerable": 3,
+        "considerably": 3,
+        "really": 3,
+        "super": 3,
+        "highly": 3,
         
         // Moderate intensities
         "some": 2,
+        "somewhat": 2,
         "noticeable": 2,
+        "noticeably": 2,
         "occasional": 2,
+        "occasionally": 2,
         "intermittent": 2,
         "regular": 2,
+        "regularly": 2,
+        "fairly": 2,
         
         // Mild intensities
         "slight": 2,
+        "slightly": 2,
         "mild": 2,
+        "mildly": 2,
         "little": 1,
         "bit": 1,
         "minor": 1,
+        "minorly": 1,
         "tiny": 1,
+        "subtle": 1,
+        "subtly": 1,
         
         // Contextual intensifiers
         "much": 3,
         "lot": 3,
         "constant": 3,
+        "constantly": 3,
         "persistent": 3,
-        "chronic": 3,
+        "persistently": 3,
         "frequent": 2,
-        "often": 2
+        "frequently": 2,
+        "often": 2,
+        "always": 3,
+        "never ending": 3
     };
 
     // D: Dictionary storing "wtsym" mapping (weight-symptom -> nutrient)
@@ -364,6 +397,66 @@ function generate_response(x) {
         return foods.slice(0, 3);
     }
 
+    // Helper function to get grammatically correct adjective form
+    function getGrammaticalAdjective(adj) {
+        // Remove adverb endings for better grammar
+        let baseAdj = adj.replace(/ly$/, '');
+        
+        // Common grammatical mappings
+        const grammarMap = {
+            "extreme": "extreme",
+            "extremely": "extreme",
+            "severe": "severe",
+            "severely": "severe",
+            "agonizing": "agonizing",
+            "agonizingly": "agonizing",
+            "debilitating": "debilitating",
+            "unbearable": "unbearable",
+            "unbearably": "unbearable",
+            "crippling": "crippling",
+            "intense": "intense",
+            "intensely": "intense",
+            "acute": "acute",
+            "terrible": "terrible",
+            "terribly": "terrible",
+            "horrible": "horrible",
+            "horribly": "horrible",
+            "awful": "awful",
+            "awfully": "awful",
+            "significant": "significant",
+            "significantly": "significant",
+            "moderate": "moderate",
+            "moderately": "moderate",
+            "considerable": "considerable",
+            "considerably": "considerable",
+            "noticeable": "noticeable",
+            "noticeably": "noticeable",
+            "occasional": "occasional",
+            "occasionally": "occasional",
+            "intermittent": "intermittent",
+            "regular": "regular",
+            "regularly": "regular",
+            "persistent": "persistent",
+            "persistently": "persistent",
+            "frequent": "frequent",
+            "frequently": "frequent",
+            "constant": "constant",
+            "constantly": "constant",
+            "slight": "slight",
+            "slightly": "slight",
+            "mild": "mild",
+            "mildly": "mild",
+            "minor": "minor",
+            "minorly": "minor",
+            "subtle": "subtle",
+            "subtly": "subtle",
+            "some": "some",
+            "somewhat": "some"
+        };
+        
+        return grammarMap[adj] || baseAdj;
+    }
+
     const foodData = {
         "Rice": {cal: 362, carb: true}, "Pasta": {cal: 348, carb: true}, "Potato": {cal: 87, carb: true},
         "Spaghetti": {cal: 371, carb: true}, "Noodles": {cal: 371, carb: true}, "Sweet Potato": {cal: 90, carb: true},
@@ -390,28 +483,40 @@ function generate_response(x) {
         }
     }
 
-    // Step 2: Detect adjective and get weight -> refers to C
-    let detectedAdj = null;
-    let weight = null;
-    for (let adj in adjWeights) {
-        if (inp.includes(adj)) {
-            detectedAdj = adj;
-            weight = adjWeights[adj];
-            break;
+    // If we found a symptom
+    if (detectedSym) {
+        // Step 2: Try to detect adjective and get weight
+        let detectedAdj = null;
+        let weight = null;
+        for (let adj in adjWeights) {
+            if (inp.includes(adj)) {
+                detectedAdj = adj;
+                weight = adjWeights[adj];
+                break;
+            }
         }
-    }
-
-    // If we found both symptom and adjective
-    if (detectedSym && weight !== null) {
+        
+        // If no adjective found, use default "moderate" with weight 2
+        let finalAdjDisplay = "moderate";
+        let finalWeight = 2;
+        
+        if (detectedAdj) {
+            finalWeight = weight;
+            finalAdjDisplay = detectedAdj;
+        }
+        
+        // Get grammatically correct adjective for display
+        let grammaticalAdj = getGrammaticalAdjective(finalAdjDisplay);
+        
         // Compound value + "-" + sym
-        let lookupKey = `${weight}-${detectedSym}`;
+        let lookupKey = `${finalWeight}-${detectedSym}`;
         
         // Search D to obtain nutrient
         let nutrient = wtsymMapping[lookupKey];
         
         // If no exact match, try to find closest match
         if (!nutrient) {
-            // Try to find any matching symptom with different weight
+            // Try to find any matching symptom with a close weight
             for (let key in wtsymMapping) {
                 if (key.endsWith(detectedSym)) {
                     nutrient = wtsymMapping[key];
@@ -420,13 +525,42 @@ function generate_response(x) {
             }
         }
         
-        nutrient = nutrient || "General Multivitamins";
+        // If still no match, use default based on symptom
+        if (!nutrient) {
+            const defaultNutrients = {
+                "fatigue": "Iron",
+                "pain": "Vitamin D",
+                "headache": "Magnesium",
+                "cramp": "Potassium",
+                "stomachache": "Vitamin B12",
+                "dizziness": "Iron",
+                "nausea": "Vitamin B6",
+                "insomnia": "Magnesium",
+                "anxiety": "Magnesium",
+                "depression": "Vitamin D",
+                "brainfog": "Vitamin B12",
+                "jointpain": "Vitamin D",
+                "backpain": "Vitamin D",
+                "hairloss": "Iron",
+                "dryskin": "Vitamin E",
+                "brittlenails": "Iron",
+                "coldintolerance": "Iron",
+                "shortnessbreath": "Iron",
+                "palpitations": "Magnesium",
+                "tingling": "Vitamin B12",
+                "mouthsores": "Vitamin B12",
+                "poorappetite": "Zinc",
+                "weightloss": "Vitamin B12",
+                "weightgain": "Iodine"
+            };
+            nutrient = defaultNutrients[detectedSym] || "General Multivitamins";
+        }
 
         // Get 3 random foods from top 5 (roll 3/5)
         let selectedFoods = getRolledFoods(nutrient);
 
-        // Prepare output messages
-        let res1 = `As you are suffering in "${detectedAdj}" "${originalSymptom}", I suspect you are deficient in "${nutrient}"`;
+        // Prepare output messages with proper grammar
+        let res1 = `As you are suffering from "${grammaticalAdj}" "${originalSymptom}", I suspect you may be deficient in "${nutrient}".`;
         
         // Format suggested recipe with proper measurements (100g for carbs, 50g for non-carbs)
         let recipeItems = selectedFoods.map(food => {
@@ -448,11 +582,16 @@ function generate_response(x) {
             "Make a nutrient-dense smoothie bowl with these ingredients as the base.",
             "These ingredients work great in a breakfast scramble or omelette.",
             "Prepare a comforting stew with these ingredients and vegetable broth.",
-            "These ingredients are perfect for a Buddha bowl with quinoa or rice."
+            "These ingredients are perfect for a Buddha bowl with quinoa or rice.",
+            "Grill these ingredients for a smoky flavor and enjoy with your favorite sauce.",
+            "These ingredients can be blended into a nutrient-packed soup."
         ];
         let res3 = randomRecipes[Math.floor(Math.random() * randomRecipes.length)];
         
-        dispatch_messages([res1, res2, res3]);
+        // Add a disclaimer note
+        let res4 = "Note: This is not a medical diagnosis. Please consult a healthcare professional for persistent symptoms.";
+        
+        dispatch_messages([res1, res2, res3, res4]);
         check = 1;
     }
 
@@ -519,11 +658,12 @@ function generate_response(x) {
     // --- FALLBACK LOGIC ---
     if (check === 0) {
         dispatch_messages([
-            "I don't understand your query! :(",
+            "I understand your query!",
             "Try inputting something like:",
+            "• 'I have a headache' (no adjective needed!)",
             "• 'I have extreme fatigue'",
             "• 'I feel very anxious'",
-            "• 'I have chronic headache'",
+            "• 'I have chronic headaches'",
             "• 'I want a 500 kcal recipe'",
             "I can analyze many symptoms including fatigue, pain, headache, cramps, stomach issues, dizziness, anxiety, insomnia, and more!"
         ]);
