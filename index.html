@@ -98,57 +98,34 @@
         }
 
         .chat-header {
-        background: var(--primary-blue);
-        color: white;
-        padding: 15px;
-        font-weight: bold;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+            background: var(--primary-blue);
+            color: white;
+            padding: 15px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        /* 1. Reduce the container gap */
-.chat-box {
-    height: 300px;
-    padding: 20px;
-    overflow-y: auto;
-    background: #fff;
-    display: flex;
-    flex-direction: column;
-    gap: 2px; /* Controls the space between messages */
-}
+        .chat-box {
+            height: 300px;
+            padding: 20px;
+            overflow-y: auto;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            gap: 0px;
+        }
 
-/* 2. Reduce or remove the message margin */
-.message {
-    max-width: 70%;
-    padding: 10px 15px;
-    border-radius: 15px;
-    margin: 2px 0; /* Changed from 4px to 2px top/bottom, 0 left/right */
-    line-height: 1.4;
-    word-wrap: break-word;
-    position: relative;
-}
-.chat-box {
-    height: 300px;
-    padding: 20px;
-    overflow-y: auto;
-    background: #fff;
-    display: flex;
-    flex-direction: column;
-    gap: 0px; 
-}
-
-
-.message {
-    max-width: 70%;
-    padding: 5px 7px;
-    border-radius: 5px;
-    margin: 0px 0; 
-    line-height: 1.4;
-    word-wrap: break-word;
-    position: relative;
-}
-
+        .message {
+            max-width: 70%;
+            padding: 5px 7px;
+            border-radius: 5px;
+            margin: 0px 0;
+            line-height: 1.4;
+            word-wrap: break-word;
+            position: relative;
+        }
 
         .ai-message {
             background: #eef5ff;
@@ -185,6 +162,104 @@
         .send-btn:disabled {
             background: #ccc;
             cursor: not-allowed;
+        }
+
+        /* Store Info Panel Styles */
+        .store-panel {
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: 1px solid #d0d7de;
+            display: none;
+        }
+
+        .store-header {
+            background: var(--primary-blue);
+            color: white;
+            padding: 15px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .store-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .close-store-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .close-store-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .store-content {
+            padding: 20px;
+        }
+
+        .store-description {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .store-description h4 {
+            margin: 0 0 8px 0;
+            color: var(--accent-green);
+        }
+
+        .store-description p {
+            margin: 5px 0;
+            font-size: 0.9rem;
+        }
+
+        .store-address {
+            color: #555;
+            font-size: 0.85rem;
+        }
+
+        .map-container {
+            margin-top: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 300px;
+            border: none;
+        }
+
+        .open-maps-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 16px;
+            background: var(--accent-green);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+
+        .open-maps-btn:hover {
+            background: #003d0c;
         }
 
         /* Ad Section */
@@ -245,12 +320,12 @@
     </header>
 
     <section class="chat-container">
-       <div class="chat-header">
-    <span>CareAI Consultation</span>
-    <div class="token-display">
-        <span id="tokenCount">100</span> 🪙
-    </div>
-</div>
+        <div class="chat-header">
+            <span>CareAI Consultation</span>
+            <div class="token-display">
+                <span id="tokenCount">100</span> 🪙
+            </div>
+        </div>
         <div class="chat-box" id="chatBox">
             <div class="message ai-message">
                 Hello! How can I help you? UwU 
@@ -261,6 +336,23 @@
             <button class="send-btn" id="sendBtn" onclick="sendMessage()">Send (-5 🪙)</button>
         </div>
     </section>
+
+    <!-- Store Information Panel -->
+    <div class="store-panel" id="storePanel">
+        <div class="store-header">
+            <h3>📍 Recommended Supplement Store</h3>
+            <button class="close-store-btn" onclick="closeStorePanel()">✕ Close</button>
+        </div>
+        <div class="store-content">
+            <div class="store-description" id="storeDescription">
+                <!-- Store description will be inserted here -->
+            </div>
+            <div class="map-container" id="mapContainer">
+                <!-- Google Maps iframe will be inserted here -->
+            </div>
+            <a href="#" id="openMapsLink" class="open-maps-btn" target="_blank">Open in Google Maps ↗</a>
+        </div>
+    </div>
 
     <div class="ad-controls">
         <button class="ad-btn" id="adBtn" onclick="watchAd()">Watch Ad for +50 🪙</button>
@@ -285,7 +377,6 @@
             document.getElementById('tokenCount').textContent = tokens;
             const sendBtn = document.getElementById('sendBtn');
             
-            // Disable send button if user is out of tokens
             if (tokens < 5) {
                 sendBtn.disabled = true;
                 sendBtn.textContent = "No Tokens!";
@@ -295,12 +386,50 @@
             }
         }
 
+        // Store Panel Functions
+        function showStorePanel(storeName, supplementName, lat, lng, address) {
+            const panel = document.getElementById('storePanel');
+            const storeDescription = document.getElementById('storeDescription');
+            const mapContainer = document.getElementById('mapContainer');
+            const openMapsLink = document.getElementById('openMapsLink');
+            
+            // Create store description
+            storeDescription.innerHTML = `
+                <h4>🏪 ${storeName}</h4>
+                <p><strong>Recommended Supplement:</strong> ${supplementName}</p>
+                <p><strong>Hours:</strong> Mon-Sun 9:00 AM - 9:00 PM</p>
+                <p><strong>Phone:</strong> +852 1234 5678</p>
+                <div class="store-address">📍 ${address}</div>
+            `;
+            
+            // Create Google Maps iframe
+            const mapsUrl = `https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=${lat},${lng}&zoom=17`;
+            // For demo without API key, use standard embed
+            const fallbackMap = `<iframe 
+                src="https://www.google.com/maps?q=${lat},${lng}&output=embed"
+                allowfullscreen=""
+                loading="lazy">
+            </iframe>`;
+            
+            mapContainer.innerHTML = fallbackMap;
+            
+            // Update the "Open in Google Maps" link
+            openMapsLink.href = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+            
+            // Show the panel with animation
+            panel.style.display = 'block';
+            panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function closeStorePanel() {
+            document.getElementById('storePanel').style.display = 'none';
+        }
+
         function sendMessage() {
             const input = document.getElementById('userInput');
             const inputtext = input.value;
             const chatBox = document.getElementById('chatBox');
 
-            // 2. Check and Deduct Tokens
             if (input.value.trim() !== "") {
                 if (tokens >= 5) {
                     tokens -= 5;
@@ -314,7 +443,9 @@
                     userDiv.style.borderBottomRightRadius = '2px';
                     userDiv.textContent = input.value;
                     chatBox.appendChild(userDiv);
-                    generate_response(inputtext)
+                    
+                    // Pass store panel functions to the AI
+                    generate_response(inputtext, showStorePanel);
 
                     input.value = "";
                     chatBox.scrollTop = chatBox.scrollHeight;
@@ -324,7 +455,7 @@
             }
         }
 
-        // 3. Ad Logic
+        // Ad Logic
         function watchAd() {
             if (isAdPlaying) return;
 
@@ -332,25 +463,19 @@
             const adBtn = document.getElementById('adBtn');
             const adContainer = document.getElementById('adContainer');
 
-            // Disable button and show GIF
             adBtn.disabled = true;
             adContainer.style.display = 'block';
 
-            // Wait 8 seconds
             setTimeout(() => {
                 tokens += 50;
                 updateTokenUI();
-                
-                // Hide GIF and re-enable button
                 adContainer.style.display = 'none';
                 adBtn.disabled = false;
                 isAdPlaying = false;
-                
                 alert("You earned 50 tokens!");
             }, 8000);
         }
 
-        // Initial UI sync
         updateTokenUI();
     </script>
 </body>

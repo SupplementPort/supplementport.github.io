@@ -603,11 +603,10 @@ function generate_response(x) {
         }
     }
 
-
-// --- SUPPLEMENT REQUEST FEATURE ---
+// --- SUPPLEMENT REQUEST FEATURE WITH GOOGLE MAPS IFRAME ---
 
 // Check if user is asking about supplements
-const supplementKeywords = ["supplement", "supplements", "vitamin", "mineral", "nutrient", "get more", "increase my", "boost my", "need more", "deficient in"];
+const supplementKeywords = ["supplement", "supplements", "vitamin", "mineral", "nutrient", "get more", "increase my", "boost my", "need more", "deficient in", "where to buy", "where can i buy", "store", "pharmacy"];
 const nutrientList = ["vitamin a", "vitamin b", "vitamin b1", "vitamin b2", "vitamin b3", "vitamin b5", "vitamin b6", "vitamin b7", "vitamin b9", "vitamin b12", "vitamin c", "vitamin d", "vitamin e", "vitamin k", "iron", "calcium", "magnesium", "potassium", "zinc", "folate", "omega 3", "omega-3", "fiber", "dietary fiber", "probiotics", "iodine", "selenium", "copper", "manganese", "chromium"];
 
 // Preset supplement data with Hong Kong stores (latitude: 22°08'N to 22°35'N, longitude: 113°49'E to 114°31'E)
@@ -616,175 +615,204 @@ const supplementData = {
         supplement: "Retinol 10,000 IU Softgels",
         store: "Mannings (Central Store)",
         lat: 22.28123,
-        lng: 114.15678
+        lng: 114.15678,
+        address: "Shop 101-102, Central Building, 1-3 Pedder Street, Central, Hong Kong"
     },
     "vitamin b": {
         supplement: "Vitamin B-Complex with B12",
         store: "Watsons (Causeway Bay)",
         lat: 22.28045,
-        lng: 114.18392
+        lng: 114.18392,
+        address: "Shop G01-03, Windsor House, 311 Gloucester Road, Causeway Bay, Hong Kong"
     },
     "vitamin b1": {
         supplement: "Thiamine HCl 100mg Tablets",
         store: "Fanda (Tsim Sha Tsui)",
         lat: 22.29612,
-        lng: 114.17234
+        lng: 114.17234,
+        address: "Shop 236-238, Ocean Terminal, Tsim Sha Tsui, Kowloon"
     },
     "vitamin b2": {
         supplement: "Riboflavin 100mg Capsules",
         store: "Mannings (Mong Kok)",
         lat: 22.31789,
-        lng: 114.16845
+        lng: 114.16845,
+        address: "Shop A, G/F, 578 Nathan Road, Mong Kok, Kowloon"
     },
     "vitamin b3": {
         supplement: "Niacinamide 500mg Tablets",
         store: "Watsons (Jordan)",
         lat: 22.30456,
-        lng: 114.17023
+        lng: 114.17023,
+        address: "Shop 1-3, G/F, 246 Nathan Road, Jordan, Kowloon"
     },
     "vitamin b5": {
         supplement: "Pantothenic Acid 250mg Caps",
         store: "HK Supplement Store (Wan Chai)",
         lat: 22.27543,
-        lng: 114.17289
+        lng: 114.17289,
+        address: "Shop B, G/F, 128 Johnston Road, Wan Chai, Hong Kong"
     },
     "vitamin b6": {
         supplement: "Pyridoxine HCl 100mg Tablets",
         store: "Mannings (Admiralty)",
         lat: 22.27834,
-        lng: 114.16567
+        lng: 114.16567,
+        address: "Shop 101, Admiralty Centre, 18 Harcourt Road, Admiralty"
     },
     "vitamin b7": {
         supplement: "Biotin 10,000mcg Capsules",
         store: "Watsons (Quarry Bay)",
         lat: 22.28734,
-        lng: 114.21234
+        lng: 114.21234,
+        address: "Shop 1-5, G/F, 938 King's Road, Quarry Bay"
     },
     "vitamin b9": {
         supplement: "Folate 800mcg (Methylfolate)",
         store: "Fanda (North Point)",
         lat: 22.29123,
-        lng: 114.20456
+        lng: 114.20456,
+        address: "Shop 201-203, City Garden, 233 Electric Road, North Point"
     },
     "vitamin b12": {
         supplement: "Methylcobalamin 1000mcg Lozenges",
         store: "Mannings (Shatin)",
         lat: 22.37845,
-        lng: 114.18765
+        lng: 114.18765,
+        address: "Shop 101-102, New Town Plaza, Shatin, New Territories"
     },
     "vitamin c": {
         supplement: "Ester-C 1000mg with Bioflavonoids",
         store: "Watsons (Tsim Sha Tsui)",
         lat: 22.29612,
-        lng: 114.17234
+        lng: 114.17234,
+        address: "Shop 301-305, Ocean Terminal, Tsim Sha Tsui"
     },
     "vitamin d": {
         supplement: "Vitamin D3 2000IU Softgels",
         store: "Mannings (Causeway Bay)",
         lat: 22.28045,
-        lng: 114.18392
+        lng: 114.18392,
+        address: "Shop G06, Times Square, 1 Matheson Street, Causeway Bay"
     },
     "vitamin e": {
         supplement: "Mixed Tocopherols 400IU",
         store: "Fanda (Central)",
         lat: 22.28123,
-        lng: 114.15678
+        lng: 114.15678,
+        address: "Shop 205, The Landmark, 15 Queen's Road Central"
     },
     "vitamin k": {
         supplement: "Vitamin K2 MK-7 100mcg Drops",
         store: "Health Store (Happy Valley)",
         lat: 22.26478,
-        lng: 114.18456
+        lng: 114.18456,
+        address: "Shop 3, G/F, 68 Blue Pool Road, Happy Valley"
     },
     "iron": {
         supplement: "Iron Bisglycinate 25mg Capsules",
         store: "Mannings (Wan Chai)",
         lat: 22.27543,
-        lng: 114.17289
+        lng: 114.17289,
+        address: "Shop A, G/F, 188 Hennessy Road, Wan Chai"
     },
     "calcium": {
         supplement: "Calcium Citrate + D3 600mg",
         store: "Watsons (Lai Chi Kok)",
         lat: 22.33456,
-        lng: 114.14876
+        lng: 114.14876,
+        address: "Shop 101-102, Lai Chi Kok Plaza, 1-3 Lai Wan Road"
     },
     "magnesium": {
         supplement: "Magnesium Glycinate 400mg Caps",
         store: "Fanda (Tsuen Wan)",
         lat: 22.36891,
-        lng: 114.11234
+        lng: 114.11234,
+        address: "Shop 201-203, Citywalk, 1 Yeung Uk Road, Tsuen Wan"
     },
     "potassium": {
         supplement: "Potassium Citrate 99mg Tablets",
         store: "Mannings (Kwun Tong)",
         lat: 22.31234,
-        lng: 114.22456
+        lng: 114.22456,
+        address: "Shop 101-102, APM Millennium City 5, Kwun Tong"
     },
     "zinc": {
         supplement: "Zinc Picolinate 50mg Capsules",
         store: "Watsons (Yuen Long)",
         lat: 22.44345,
-        lng: 114.02890
+        lng: 114.02890,
+        address: "Shop 1-3, G/F, 28 Castle Peak Road, Yuen Long"
     },
     "folate": {
         supplement: "Folate 800mcg (Methylfolate)",
         store: "Fanda (North Point)",
         lat: 22.29123,
-        lng: 114.20456
+        lng: 114.20456,
+        address: "Shop 201-203, City Garden, 233 Electric Road, North Point"
     },
     "omega 3": {
         supplement: "Fish Oil 1000mg (EPA 180mg/DHA 120mg)",
         store: "Mannings (Kennedy Town)",
         lat: 22.27901,
-        lng: 114.12345
+        lng: 114.12345,
+        address: "Shop G01-02, New Fortune House, 3-5 Catchick Street"
     },
     "omega-3": {
         supplement: "Fish Oil 1000mg (EPA 180mg/DHA 120mg)",
         store: "Mannings (Kennedy Town)",
         lat: 22.27901,
-        lng: 114.12345
+        lng: 114.12345,
+        address: "Shop G01-02, New Fortune House, 3-5 Catchick Street"
     },
     "fiber": {
         supplement: "Psyllium Husk Powder 500mg",
         store: "Watsons (Hung Hom)",
         lat: 22.30423,
-        lng: 114.18234
+        lng: 114.18234,
+        address: "Shop 1-2, G/F, 62-66 Hung Hom Road, Hung Hom"
     },
     "dietary fiber": {
         supplement: "Psyllium Husk Powder 500mg",
         store: "Watsons (Hung Hom)",
         lat: 22.30423,
-        lng: 114.18234
+        lng: 114.18234,
+        address: "Shop 1-2, G/F, 62-66 Hung Hom Road, Hung Hom"
     },
     "probiotics": {
         supplement: "Probiotic 50 Billion CFU (15 Strains)",
         store: "Fanda (Kowloon Bay)",
         lat: 22.32056,
-        lng: 114.21056
+        lng: 114.21056,
+        address: "Shop 301-305, Telford Plaza, Kowloon Bay"
     },
     "iodine": {
         supplement: "Potassium Iodide 225mcg Tablets",
         store: "Mannings (Tai Koo)",
         lat: 22.28734,
-        lng: 114.21234
+        lng: 114.21234,
+        address: "Shop 101-102, Cityplaza, 18 Taikoo Shing Road"
     },
     "selenium": {
         supplement: "Selenomethionine 200mcg Capsules",
         store: "Watsons (Aberdeen)",
         lat: 22.24867,
-        lng: 114.15123
+        lng: 114.15123,
+        address: "Shop 1-3, G/F, 26 Aberdeen Main Road"
     },
     "copper": {
         supplement: "Copper Glycinate 2mg Capsules",
         store: "Health Store (Sheung Wan)",
         lat: 22.28654,
-        lng: 114.14892
+        lng: 114.14892,
+        address: "Shop B, G/F, 128 Wing Lok Street, Sheung Wan"
     },
     "chromium": {
         supplement: "Chromium Picolinate 200mcg Tablets",
         store: "Mannings (Ma On Shan)",
         lat: 22.42091,
-        lng: 114.22634
+        lng: 114.22634,
+        address: "Shop 101-102, Ma On Shan Plaza, 608 Sai Sha Road"
     }
 };
 
@@ -817,38 +845,50 @@ if (isSupplementRequest) {
         else if (inp.includes("b3") || inp.includes("b-3")) detectedNutrient = "vitamin b3";
         else if (inp.includes("b2") || inp.includes("b-2")) detectedNutrient = "vitamin b2";
         else if (inp.includes("b1") || inp.includes("b-1")) detectedNutrient = "vitamin b1";
-        else if (inp.includes("c")) detectedNutrient = "vitamin c";
+        else if (inp.includes("c") && !inp.includes("vitamin")) detectedNutrient = "vitamin c";
         else if (inp.includes("d3")) detectedNutrient = "vitamin d";
         else if (inp.includes("k2")) detectedNutrient = "vitamin k";
     }
     
-    // If a nutrient was detected, output supplement info
+    // If a nutrient was detected, output supplement info with map
     if (detectedNutrient) {
         const data = supplementData[detectedNutrient];
         if (data) {
-            let res1 = `For ${detectedNutrient.toUpperCase()} deficiency, I recommend: ${data.supplement}`;
-            let res2 = `Available at: ${data.store}`;
-            let res3 = `Store Location: (${data.lat.toFixed(5)}°, ${data.lng.toFixed(5)}°)`;
-            let res4 = `Note: Always consult a healthcare professional before starting any supplement regimen.`;
+            let res1 = `✨ For ${detectedNutrient.toUpperCase()} deficiency, I recommend: ${data.supplement}`;
+            let res2 = `📍 Available at: ${data.store}`;
+            let res3 = `📋 Opening hours: Mon-Sun 9:00 AM - 9:00 PM`;
+            let res4 = `💡 The store location is shown below with a map. Click "Open in Google Maps" for directions.`;
+            let res5 = `⚠️ Note: Always consult a healthcare professional before starting any supplement regimen.`;
             
-            dispatch_messages([res1, res2, res3, res4]);
+            dispatch_messages([res1, res2, res3, res4, res5]);
+            
+            // Show the store panel with map
+            if (typeof showStorePanel === 'function') {
+                showStorePanel(data.store, data.supplement, data.lat, data.lng, data.address);
+            }
             check = 1;
         } else {
             // Fallback for detected nutrient without specific data
-            let res1 = `For ${detectedNutrient.toUpperCase()}, consider a high-quality supplement from reputable brands.`;
-            let res2 = `Available at: Mannings or Watsons stores across Hong Kong`;
-            let res3 = `Store Location (Central): (22.28123°, 114.15678°)`;
+            let res1 = `💊 For ${detectedNutrient.toUpperCase()}, consider a high-quality supplement from reputable brands.`;
+            let res2 = `📍 Available at: Mannings or Watsons stores across Hong Kong`;
+            let res3 = `📍 Recommended store location: Mannings (Central) - 22.28123°, 114.15678°`;
             
             dispatch_messages([res1, res2, res3]);
+            
+            // Show default store
+            if (typeof showStorePanel === 'function') {
+                showStorePanel("Mannings (Central)", `${detectedNutrient.toUpperCase()} Supplement`, 22.28123, 114.15678, "Shop 101-102, Central Building, 1-3 Pedder Street, Central, Hong Kong");
+            }
             check = 1;
         }
     } else if (isSupplementRequest) {
         // User asked about supplements but didn't specify which nutrient
-        let res1 = "Which nutrient are you looking for? I can recommend supplements for:";
-        let res2 = "Vitamin B12, Vitamin D, Iron, Magnesium, Zinc, Calcium, Omega-3, Probiotics, and more!";
-        let res3 = "Try asking: 'How can I get more Vitamin B12?' or 'Where to buy Magnesium supplements?'";
+        let res1 = "💊 Which nutrient are you looking for? I can recommend supplements and stores for:";
+        let res2 = "🔹 Vitamin B12, Vitamin D, Iron, Magnesium, Zinc, Calcium";
+        let res3 = "🔹 Omega-3, Probiotics, Vitamin C, Folate, and more!";
+        let res4 = "💡 Try asking: 'How can I get more Vitamin B12?' or 'Where to buy Magnesium supplements?'";
         
-        dispatch_messages([res1, res2, res3]);
+        dispatch_messages([res1, res2, res3, res4]);
         check = 1;
     }
 }
