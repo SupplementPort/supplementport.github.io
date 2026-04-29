@@ -630,16 +630,38 @@ function generate_response(x, showStorePanelCallback) {
     // --- SUPPLEMENT REQUEST FEATURE WITH GOOGLE MAPS IFRAME ---
 
     // Supplement keywords - only trigger when user is explicitly asking for supplements
-    const supplementKeywords = [
-        "supplement", "supplements", "where to buy", "where can i buy", 
-        "get more", "increase my", "boost my", "need more", "deficient in",
-        "recommend a supplement", "supplement store", "pharmacy", "health store"
-    ];
+  const supplementKeywords = [
+    // --- INTENT: BUYING & LOCATING ---
+    "buy", "purchase", "get", "shop", "find", "where", "location", "store", "pharmacy", 
+    "mannings", "watsons", "chemist", "online", "order", "acquire", "pick up", "stock up", 
+    "nearest", "available", "selling", "distributor", "retailer", "market", "outlet",
+    "health store", "gnc", "chirehab", "fanda", "iherb", "vitacost",
+
+    // --- INTENT: BOOSTING & LACKING ---
+    "deficient", "deficiency", "lack", "low", "need more", "increase", "boost", "improve", 
+    "fix", "depleted", "shortage", "insufficient", "inadequate", "not enough", "empty", 
+    "exhausted", "restore", "replenish", "optimize", "raise my levels",
+
+    // --- INTENT: PRODUCT TYPES & FORMS ---
+    "supplement", "supplements", "vitamins", "multivitamin", "pills", "capsules", "tablets", 
+    "softgels", "powder", "gummies", "chewables", "liquid", "tincture", "drops", "syrup", 
+    "dose", "dosage", "serving", "potency", "extract", "concentrate",
+
+    // --- INTENT: ADVICE & RECOMMENDATION ---
+    "recommend", "suggestion", "suggest", "advice", "what should i take", "how much", 
+    "best brand", "top rated", "effective", "quality", "brand", "brands", "compare", 
+    "difference between", "which one", "help with", "good for", "benefit", "benefits",
+
+    // --- INTENT: MEDICAL & LAB CONTEXT ---
+    "blood test", "lab results", "levels", "intake", "daily value", "dv", "rda", "iu", 
+    "mcg", "mg", "milligrams", "micrograms", "absorption", "bioavailability", "prescribed",
+    "doctor said", "physician", "nutritionist", "dietitian"
+];
     
     // Check if this is a supplement request (must have explicit keywords to avoid false positives)
     let isSupplementRequest = false;
     for (let keyword of supplementKeywords) {
-        if (inp.includes(keyword)) {
+        if (lower(inp).includes(keyword)) {
             isSupplementRequest = true;
             break;
         }
