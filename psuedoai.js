@@ -627,60 +627,9 @@ function generate_response(x, showStorePanelCallback) {
         }
     }
 
-    // --- SUPPLEMENT REQUEST FEATURE WITH GOOGLE MAPS IFRAME ---
 
-    // Supplement keywords - only trigger when user is explicitly asking for supplements
-  const supplementKeywords = [
-    // --- INTENT: BUYING & LOCATING ---
-    "buy", "purchase", "get", "shop", "find", "where", "location", "store", "pharmacy", 
-    "mannings", "watsons", "chemist", "online", "order", "acquire", "pick up", "stock up", 
-    "nearest", "available", "selling", "distributor", "retailer", "market", "outlet",
-    "health store", "gnc", "chirehab", "fanda", "iherb", "vitacost",
-
-    // --- INTENT: BOOSTING & LACKING ---
-    "deficient", "deficiency", "lack", "low", "need more", "increase", "boost", "improve", 
-    "fix", "depleted", "shortage", "insufficient", "inadequate", "not enough", "empty", 
-    "exhausted", "restore", "replenish", "optimize", "raise my levels",
-
-    // --- INTENT: PRODUCT TYPES & FORMS ---
-    "supplement", "supplements", "vitamins", "multivitamin", "pills", "capsules", "tablets", 
-    "softgels", "powder", "gummies", "chewables", "liquid", "tincture", "drops", "syrup", 
-    "dose", "dosage", "serving", "potency", "extract", "concentrate",
-
-    // --- INTENT: ADVICE & RECOMMENDATION ---
-    "recommend", "suggestion", "suggest", "advice", "what should i take", "how much", 
-    "best brand", "top rated", "effective", "quality", "brand", "brands", "compare", 
-    "difference between", "which one", "help with", "good for", "benefit", "benefits",
-
-    // --- INTENT: MEDICAL & LAB CONTEXT ---
-    "blood test", "lab results", "levels", "intake", "daily value", "dv", "rda", "iu", 
-    "mcg", "mg", "milligrams", "micrograms", "absorption", "bioavailability", "prescribed",
-    "doctor said", "physician", "nutritionist", "dietitian"
-];
     
-    // Check if this is a supplement request (must have explicit keywords to avoid false positives)
-    let isSupplementRequest = false;
-    for (let keyword of supplementKeywords) {
-        if (lower(inp).includes(keyword)) {
-            isSupplementRequest = true;
-            break;
-        }
-    }
-    
-    // Also check for direct nutrient queries with "vitamin" or "mineral"
-    const nutrientIndicators = ["vitamin", "mineral", "nutrient", "calcium", "magnesium", "potassium", "iron", "zinc", "folate", "fiber", "fibre", "probiotic", "iodine", "selenium"];
-    for (let indicator of nutrientIndicators) {
-        if (inp.includes(indicator)) {
-            isSupplementRequest = true;
-            break;
-        }
-    }
-
-    // Comprehensive nutrient detection with full names (no chemical symbols)
-    if (isSupplementRequest) {
-        let detectedNutrient = null;
-        
-        // Check for specific nutrients in order of specificity
+   
         
   const nutrientPatterns = [
     // B-vitamins (specific codes first to prevent partial matching)
@@ -738,7 +687,7 @@ function generate_response(x, showStorePanelCallback) {
         }
         
         // If a nutrient was detected, output supplement info with map
-        if (detectedNutrient) {
+        
             // Normalize nutrient name for lookup
             let lookupNutrient = detectedNutrient;
             if (lookupNutrient === "fibre") lookupNutrient = "fiber";
@@ -775,17 +724,8 @@ function generate_response(x, showStorePanelCallback) {
                     window.showStorePanel("Mannings (Central)", `${lookupNutrient.toUpperCase()} Supplement`, 22.28123, 114.15678, "Shop 101-102, Central Building, 1-3 Pedder Street, Central, Hong Kong");
                 }
                 check = 1;
-            }
-        } else if (isSupplementRequest) {
-            // User asked about supplements but didn't specify which nutrient
-            let res1 = "💊 Which nutrient are you looking for? I can recommend supplements and stores for:";
-            let res2 = "🔹 Vitamin B12, Vitamin D, Iron, Magnesium, Zinc, Calcium";
-            let res3 = "🔹 Omega-3, Probiotics, Vitamin C, Folate, Fiber, and more!";
-            let res4 = "💡 Try asking: 'Where can I buy magnesium?' or 'I need a Vitamin B12 supplement'";
             
-            dispatch_messages([res1, res2, res3, res4]);
-            check = 1;
-        }
+        
     }
     
     // --- FALLBACK LOGIC ---
