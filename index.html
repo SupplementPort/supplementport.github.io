@@ -37,7 +37,7 @@
         }
 
         .logo img {
-            height: 75px;
+            height: 50px;
             width: auto;
             vertical-align: middle;
         }   
@@ -280,7 +280,14 @@
 
         .ad-btn:disabled {
             opacity: 0.6;
-            cursor: wait;
+            cursor: not-allowed;
+        }
+
+        .ads-remaining {
+            display: block;
+            font-size: 0.9rem;
+            margin-top: 8px;
+            color: var(--text-dark);
         }
 
         #adContainer {
@@ -356,6 +363,7 @@
 
     <div class="ad-controls">
         <button class="ad-btn" id="adBtn" onclick="watchAd()">Watch Ad for +2 🪙</button>
+        <span class="ads-remaining" id="adStatus">Daily ads remaining: 3</span>
         <div id="adContainer">
             <p>Ad playing, Enjoy :D</p>
             <img src="ad.gif" alt="Ad GIF">
@@ -372,6 +380,7 @@
         // 1. Initialize Token System
         let tokens = 15;
         let isAdPlaying = false;
+        let dailyAdsLeft = 3;
 
         function updateTokenUI() {
             document.getElementById('tokenCount').textContent = tokens;
@@ -383,6 +392,18 @@
             } else {
                 sendBtn.disabled = false;
                 sendBtn.textContent = "Send (-5 🪙)";
+            }
+        }
+
+        function updateAdUI() {
+            const adBtn = document.getElementById('adBtn');
+            const adStatus = document.getElementById('adStatus');
+            
+            adStatus.textContent = `Daily ads remaining: ${dailyAdsLeft}`;
+            
+            if (dailyAdsLeft <= 0) {
+                adBtn.disabled = true;
+                adBtn.textContent = "Daily Limit Reached";
             }
         }
 
@@ -457,7 +478,7 @@
 
         // Ad Logic
         function watchAd() {
-            if (isAdPlaying) return;
+            if (isAdPlaying || dailyAdsLeft <= 0) return;
 
             isAdPlaying = true;
             const adBtn = document.getElementById('adBtn');
@@ -468,15 +489,23 @@
 
             setTimeout(() => {
                 tokens += 2;
+                dailyAdsLeft--;
                 updateTokenUI();
+                updateAdUI();
                 adContainer.style.display = 'none';
-                adBtn.disabled = false;
+                
+                // Keep button disabled if daily limit hit
+                if (dailyAdsLeft > 0) {
+                    adBtn.disabled = false;
+                }
+                
                 isAdPlaying = false;
                 alert("You earned 2 tokens!");
             }, 8000);
         }
 
         updateTokenUI();
+        updateAdUI();
     </script>
 </body>
 </html>
