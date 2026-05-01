@@ -355,7 +355,7 @@
     </div>
 
     <div class="ad-controls">
-        <button class="ad-btn" id="adBtn" onclick="watchAd()">Watch Ad for +50 🪙</button>
+        <button class="ad-btn" id="adBtn" onclick="watchAd()">Watch Ad for +2 🪙</button>
         <div id="adContainer">
             <p>Ad playing, Enjoy :D</p>
             <img src="ad.gif" alt="Ad GIF">
@@ -370,7 +370,7 @@
     <script src="psuedoai.js"></script>
     <script>
         // 1. Initialize Token System
-        let tokens = 100;
+        let tokens = 10;
         let isAdPlaying = false;
 
         function updateTokenUI() {
@@ -472,7 +472,7 @@
                 adContainer.style.display = 'none';
                 adBtn.disabled = false;
                 isAdPlaying = false;
-                alert("You earned 50 tokens!");
+                alert("You earned 2 tokens!");
             }, 8000);
         }
 
