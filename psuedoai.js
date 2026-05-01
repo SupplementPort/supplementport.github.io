@@ -651,20 +651,28 @@ function generate_response(x, showStorePanelCallback) {
         }
         
         // Also check for common variations
-        if (!detectedNutrient) {
-            if (inp.includes("b12") || inp.includes("b-12")) detectedNutrient = "vitamin b12";
-            else if (inp.includes("b9") || inp.includes("b-9")) detectedNutrient = "vitamin b9";
-            else if (inp.includes("b6") || inp.includes("b-6")) detectedNutrient = "vitamin b6";
-            else if (inp.includes("b3") || inp.includes("b-3")) detectedNutrient = "vitamin b3";
-            else if (inp.includes("b2") || inp.includes("b-2")) detectedNutrient = "vitamin b2";
-            else if (inp.includes("b1") || inp.includes("b-1")) detectedNutrient = "vitamin b1";
-            else if (inp.includes("b complex") || inp.includes("b-complex")) detectedNutrient = "vitamin b";
-            else if (inp.includes("c") && !inp.includes("vitamin") && inp.length < 10) detectedNutrient = "vitamin c";
-            else if (inp.includes("d3")) detectedNutrient = "vitamin d";
-            else if (inp.includes("k2")) detectedNutrient = "vitamin k";
-            else if (inp.includes("fish oil")) detectedNutrient = "omega 3";
-            else if (inp.includes("epa") || inp.includes("dha")) detectedNutrient = "omega 3";
-        }
+        // This replaces your entire if/else block for nutrients
+const nutrientPatterns = [
+    { pattern: /vitamin\s*(?:c|ascorbic\s*acid)/i, nutrient: "vitamin c" },
+    { pattern: /vitamin\s*(?:b12|b-12|cobalamin)/i, nutrient: "vitamin b12" },
+    { pattern: /vitamin\s*(?:b9|b-9|folate|folic\s*acid)/i, nutrient: "vitamin b9" },
+    { pattern: /vitamin\s*(?:b6|b-6|pyridoxine)/i, nutrient: "vitamin b6" },
+    { pattern: /vitamin\s*(?:b3|b-3|niacin)/i, nutrient: "vitamin b3" },
+    { pattern: /vitamin\s*(?:b2|b-2|riboflavin)/i, nutrient: "vitamin b2" },
+    { pattern: /vitamin\s*(?:b1|b-1|thiamine)/i, nutrient: "vitamin b1" },
+    { pattern: /vitamin\s*(?:b|b[- ]*complex)/i, nutrient: "vitamin b" },
+    { pattern: /vitamin\s*(?:d3?|calciferol)/i, nutrient: "vitamin d" },
+    { pattern: /vitamin\s*(?:k[12]?|menaquinone)/i, nutrient: "vitamin k" },
+    { pattern: /\b(?:omega[- ]*3|fish\s*oil|epa|dha)\b/i, nutrient: "omega 3" }
+];
+
+// Scan for a match
+for (const item of nutrientPatterns) {
+    if (item.pattern.test(inp)) {
+        detectedNutrient = item.nutrient;
+        break; 
+    }
+}
         
         // If a nutrient was detected, output supplement info with map
         if (detectedNutrient) {
