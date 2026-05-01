@@ -323,7 +323,7 @@
         <div class="chat-header">
             <span>CareAI Consultation</span>
             <div class="token-display">
-                <span id="tokenCount">100</span> 🪙
+                <span id="tokenCount">15</span> 🪙
             </div>
         </div>
         <div class="chat-box" id="chatBox">
@@ -370,7 +370,7 @@
     <script src="psuedoai.js"></script>
     <script>
         // 1. Initialize Token System
-        let tokens = 10;
+        let tokens = 15;
         let isAdPlaying = false;
 
         function updateTokenUI() {
@@ -467,7 +467,7 @@
             adContainer.style.display = 'block';
 
             setTimeout(() => {
-                tokens += 50;
+                tokens += 2;
                 updateTokenUI();
                 adContainer.style.display = 'none';
                 adBtn.disabled = false;
